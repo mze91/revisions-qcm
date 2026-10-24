@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
 import { melanger } from '../correction'
+import { Icone } from '../ui'
 import ChoixChapitres from './ChoixChapitres'
 import type { ParametresSession } from './Session'
 import type { Question } from '../types'
@@ -33,12 +34,13 @@ export default function Erreurs({ onLancer }: { onLancer: (p: ParametresSession)
   if (questions.length === 0) {
     return (
       <div>
-        <h1>Mes erreurs</h1>
+        <h1 className="titre">Mes erreurs</h1>
         <div className="vide">
-          <p>🎉 Aucune erreur en attente.</p>
-          <p className="aide">
-            Chaque QCM raté arrive ici automatiquement. Il n'en sort que quand tu le réussis depuis cet onglet.
-          </p>
+          <div className="vide-icone bon">
+            <Icone nom="coche" taille={40} epaisseur={2.6} />
+          </div>
+          <h2>Tout est à jour&nbsp;!</h2>
+          <p>Chaque QCM raté arrive ici automatiquement. Il n'en sort que quand tu le réussis depuis cet onglet.</p>
         </div>
       </div>
     )
@@ -48,40 +50,55 @@ export default function Erreurs({ onLancer }: { onLancer: (p: ParametresSession)
   const choisies = questions.filter((q) => selection.has(q.chapitreId))
 
   return (
-    <div>
-      <h1>Mes erreurs</h1>
-      <p className="aide">
-        {questions.length} QCM à retravailler. Un QCM sort de cette liste quand tu le réussis ici.
-      </p>
+    <div className="avec-action">
+      <h1 className="titre">Mes erreurs</h1>
+      <div className="carte resume-erreurs">
+        <span className="resume-chiffre">{questions.length}</span>
+        <span>
+          <strong>QCM à retravailler</strong>
+          <small>Un QCM sort de cette liste quand tu le réussis ici.</small>
+        </span>
+      </div>
+
       <ChoixChapitres
         matieres={matieres}
         chapitres={chapitres}
         compte={compte}
         coches={selection}
         onChange={setCoches}
+        unite="à revoir"
       />
 
       <button className="lien" onClick={() => setVoirListe(!voirListe)}>
         {voirListe ? 'Masquer la liste' : 'Voir la liste des QCM'}
       </button>
       {voirListe && (
-        <div className="liste-bilan">
+        <div className="liste">
           {choisies.map((q) => (
-            <div key={q.id} className="ligne-bilan faux">
-              <span>✗{(echecs.get(q.id) ?? 1) > 1 ? `×${echecs.get(q.id)}` : ''}</span>
-              <span className="ligne-nom">{q.enonce}</span>
+            <div key={q.id} className="ligne faux">
+              <span className="ligne-icone">
+                <Icone nom="croix" taille={14} epaisseur={3} />
+              </span>
+              <span className="ligne-texte">{q.enonce}</span>
+              {(echecs.get(q.id) ?? 1) > 1 && <span className="ligne-fois">×{echecs.get(q.id)}</span>}
             </div>
           ))}
         </div>
       )}
 
-      <div className="barre-action">
+      <div className="action-flottante">
         <button
-          className="principal"
+          className="bouton rouge"
           disabled={choisies.length === 0}
           onClick={() => onLancer({ questionIds: melanger(choisies.map((q) => q.id)), mode: 'erreurs' })}
         >
-          {choisies.length === 0 ? 'Coche au moins un chapitre' : `Retravailler ces ${choisies.length} QCM`}
+          {choisies.length === 0 ? (
+            'Coche au moins un chapitre'
+          ) : (
+            <>
+              <Icone nom="cible" /> Retravailler {choisies.length} QCM
+            </>
+          )}
         </button>
       </div>
     </div>

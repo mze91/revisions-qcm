@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
 import { melanger } from '../correction'
-import { importerPack } from '../importation'
-import exemple from '../../exemples/packs/physiologie/cycle-cardiaque.qcm.json?raw'
+import { useStats } from '../stats'
+import { Icone } from '../ui'
 import ChoixChapitres from './ChoixChapitres'
 import type { ParametresSession } from './Session'
 
@@ -31,6 +31,7 @@ export default function Reviser({ onLancer, allerAuxCours }: Props) {
     await db.questions.each((q) => m.set(q.chapitreId, (m.get(q.chapitreId) ?? 0) + 1))
     return m
   }, [])
+  const stats = useStats()
   const [coches, setCoches] = useState<Set<string>>(lireSelection)
   const [taille, setTaille] = useState(20)
   const [nouvellesDabord, setNouvellesDabord] = useState(true)
@@ -47,21 +48,21 @@ export default function Reviser({ onLancer, allerAuxCours }: Props) {
 
   if (matieres.length === 0) {
     return (
-      <div className="vide">
-        <h1>Bienvenue 👋</h1>
-        <p>Pour commencer, importe un fichier de QCM fait à partir de ton cours.</p>
-        <button className="principal" onClick={allerAuxCours}>
-          Aller à « Mes cours »
-        </button>
-        <button className="secondaire" style={{ marginTop: 10 }} onClick={() => importerPack(exemple)}>
-          Essayer avec un cours d'exemple
-        </button>
+      <div>
+        <h1 className="titre">S'entraîner</h1>
+        <div className="vide">
+          <p>Aucun QCM pour l'instant.</p>
+          <button className="bouton principal" onClick={allerAuxCours}>
+            <Icone nom="importer" /> Importer mes QCM
+          </button>
+        </div>
       </div>
     )
   }
 
   const selection = [...coches].filter((id) => compte.has(id))
   const disponibles = selection.reduce((s, id) => s + (compte.get(id) ?? 0), 0)
+  const nombre = taille ? Math.min(taille, disponibles) : disponibles
 
   const lancer = async () => {
     const questions = await db.questions.where('chapitreId').anyOf(selection).primaryKeys()
@@ -74,13 +75,24 @@ export default function Reviser({ onLancer, allerAuxCours }: Props) {
   }
 
   return (
-    <div>
-      <h1>Réviser</h1>
-      <p className="aide">Coche les chapitres à travailler.</p>
-      <ChoixChapitres matieres={matieres} chapitres={chapitres} compte={compte} coches={coches} onChange={setCoches} />
+    <div className="avec-action">
+      <h1 className="titre">S'entraîner</h1>
+      <p className="sous-titre">
+        <span className="etape">1</span> Coche les chapitres à travailler
+      </p>
+      <ChoixChapitres
+        matieres={matieres}
+        chapitres={chapitres}
+        compte={compte}
+        coches={coches}
+        onChange={setCoches}
+        maitrise={stats?.maitrise}
+      />
 
-      <section className="carte">
-        <h3>Nombre de questions</h3>
+      <p className="sous-titre">
+        <span className="etape">2</span> Combien de questions&nbsp;?
+      </p>
+      <div className="carte">
         <div className="segments">
           {TAILLES.map((t) => (
             <button key={t} className={taille === t ? 'actif' : ''} onClick={() => setTaille(t)}>
@@ -88,17 +100,24 @@ export default function Reviser({ onLancer, allerAuxCours }: Props) {
             </button>
           ))}
         </div>
-        <label className="ligne-case">
+        <label className="interrupteur">
+          <span>
+            Questions jamais faites en premier
+          </span>
           <input type="checkbox" checked={nouvellesDabord} onChange={(e) => setNouvellesDabord(e.target.checked)} />
-          <span className="ligne-nom">Questions jamais faites en premier</span>
+          <span className="glissiere" />
         </label>
-      </section>
+      </div>
 
-      <div className="barre-action">
-        <button className="principal" disabled={disponibles === 0} onClick={lancer}>
-          {disponibles === 0
-            ? 'Coche au moins un chapitre'
-            : `Commencer (${taille ? Math.min(taille, disponibles) : disponibles} questions)`}
+      <div className="action-flottante">
+        <button className="bouton principal" disabled={disponibles === 0} onClick={lancer}>
+          {disponibles === 0 ? (
+            'Coche au moins un chapitre'
+          ) : (
+            <>
+              <Icone nom="eclair" /> C'est parti · {nombre} QCM
+            </>
+          )}
         </button>
       </div>
     </div>

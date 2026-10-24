@@ -1,4 +1,7 @@
+import type { CSSProperties } from 'react'
 import type { Chapitre, Matiere } from '../types'
+import { couleurMatiere } from '../stats'
+import { Icone, Pastille } from '../ui'
 
 interface Props {
   matieres: Matiere[]
@@ -6,10 +9,12 @@ interface Props {
   compte: Map<string, number> // nombre de questions disponibles par chapitre
   coches: Set<string>
   onChange: (coches: Set<string>) => void
+  maitrise?: Map<string, number> // 0 à 1, affichée en barre sous le chapitre
+  unite?: string
 }
 
-// Liste des matières et de leurs chapitres, avec une case à cocher par chapitre.
-export default function ChoixChapitres({ matieres, chapitres, compte, coches, onChange }: Props) {
+// Matières (une carte colorée chacune) et leurs chapitres à cocher.
+export default function ChoixChapitres({ matieres, chapitres, compte, coches, onChange, maitrise, unite = 'QCM' }: Props) {
   const basculer = (ids: string[], cocher: boolean) => {
     const suivant = new Set(coches)
     for (const id of ids) {
@@ -28,21 +33,42 @@ export default function ChoixChapitres({ matieres, chapitres, compte, coches, on
         if (chs.length === 0) return null
         const ids = chs.map((c) => c.id)
         const tous = ids.every((id) => coches.has(id))
+        const couleur = couleurMatiere(m.id)
         return (
-          <section key={m.id} className="carte">
-            <div className="carte-titre">
-              <h3>{m.nom}</h3>
-              <button className="lien" onClick={() => basculer(ids, !tous)}>
-                {tous ? 'Tout décocher' : 'Tout cocher'}
+          <section key={m.id} className="carte matiere" style={{ '--couleur': couleur } as CSSProperties}>
+            <div className="matiere-tete">
+              <Pastille nom={m.nom} couleur={couleur} />
+              <div className="matiere-nom">
+                <h3>{m.nom}</h3>
+                <small>
+                  {chs.length} chapitre{chs.length > 1 ? 's' : ''}
+                </small>
+              </div>
+              <button className="puce" onClick={() => basculer(ids, !tous)}>
+                {tous ? 'Aucun' : 'Tous'}
               </button>
             </div>
-            {chs.map((c) => (
-              <label key={c.id} className="ligne-case">
-                <input type="checkbox" checked={coches.has(c.id)} onChange={(e) => basculer([c.id], e.target.checked)} />
-                <span className="ligne-nom">{c.nom}</span>
-                <span className="ligne-compte">{compte.get(c.id)}</span>
-              </label>
-            ))}
+            {chs.map((c) => {
+              const coche = coches.has(c.id)
+              const m100 = Math.round((maitrise?.get(c.id) ?? 0) * 100)
+              return (
+                <button key={c.id} className={`chapitre ${coche ? 'coche' : ''}`} onClick={() => basculer([c.id], !coche)}>
+                  <span className="case">{coche && <Icone nom="coche" taille={16} epaisseur={3} />}</span>
+                  <span className="chapitre-texte">
+                    <span className="chapitre-nom">{c.nom}</span>
+                    <span className="chapitre-info">
+                      {compte.get(c.id)} {unite}
+                      {maitrise && ` · maîtrisé à ${m100} %`}
+                    </span>
+                    {maitrise && (
+                      <span className="jauge">
+                        <span style={{ width: `${m100}%` }} />
+                      </span>
+                    )}
+                  </span>
+                </button>
+              )
+            })}
           </section>
         )
       })}

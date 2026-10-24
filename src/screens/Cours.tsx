@@ -2,6 +2,8 @@ import { useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
 import { creerSauvegarde, importerPack, supprimerChapitre } from '../importation'
+import { couleurMatiere } from '../stats'
+import { Icone, Pastille } from '../ui'
 
 interface Message {
   type: 'bon' | 'faux'
@@ -66,61 +68,71 @@ export default function Cours() {
 
   return (
     <div>
-      <h1>Mes cours</h1>
+      <h1 className="titre">Mes cours</h1>
 
-      <section className="carte">
+      <section className="carte import">
+        <span className="import-icone">
+          <Icone nom="importer" taille={28} />
+        </span>
         <h3>Ajouter des QCM</h3>
-        <p className="aide">
-          Choisis un fichier de QCM fait à partir de ton cours (il se termine par .json). Si le chapitre existe
-          déjà, il est mis à jour.
-        </p>
+        <p className="aide">Choisis le fichier de QCM reçu (il se termine par .json). Un chapitre déjà présent est mis à jour.</p>
         <input ref={fichier} type="file" multiple hidden onChange={(e) => importer(e.target.files)} />
-        <button className="principal" onClick={() => fichier.current?.click()}>
-          Importer un fichier
+        <button className="bouton principal" onClick={() => fichier.current?.click()}>
+          <Icone nom="plus" /> Importer un fichier
         </button>
         {messages.map((m, i) => (
           <p key={i} className={`message ${m.type}`}>
-            {m.type === 'bon' ? '✓ ' : '⚠️ '}
+            <Icone nom={m.type === 'bon' ? 'coche' : 'croix'} taille={16} epaisseur={3} />
             {m.texte}
           </p>
         ))}
       </section>
 
-      {matieres.map((m) => (
-        <section key={m.id} className="carte">
-          <h3>{m.nom}</h3>
-          {chapitres
-            .filter((c) => c.matiereId === m.id)
-            .sort((a, b) => a.ordre - b.ordre)
-            .map((c) => (
-              <div key={c.id} className="ligne-chapitre">
-                <div>
-                  <div className="ligne-nom">{c.nom}</div>
-                  <div className="aide">
+      {matieres.map((m) => {
+        const couleur = couleurMatiere(m.id)
+        const chs = chapitres.filter((c) => c.matiereId === m.id).sort((a, b) => a.ordre - b.ordre)
+        return (
+          <section key={m.id} className="carte matiere">
+            <div className="matiere-tete">
+              <Pastille nom={m.nom} couleur={couleur} />
+              <div className="matiere-nom">
+                <h3>{m.nom}</h3>
+                <small>
+                  {chs.length} chapitre{chs.length > 1 ? 's' : ''}
+                </small>
+              </div>
+            </div>
+            {chs.map((c) => (
+              <div key={c.id} className="chapitre fixe">
+                <span className="chapitre-texte">
+                  <span className="chapitre-nom">{c.nom}</span>
+                  <span className="chapitre-info">
                     {compte.get(c.id) ?? 0} QCM · importé le {new Date(c.importeLe).toLocaleDateString('fr-FR')}
-                  </div>
-                </div>
+                  </span>
+                </span>
                 <button
-                  className="lien danger"
+                  className="icone-bouton danger"
+                  aria-label={`Supprimer ${c.nom}`}
                   onClick={() => {
                     if (confirm(`Supprimer « ${c.nom} » et ses QCM du téléphone ?`)) supprimerChapitre(c.id)
                   }}
                 >
-                  Supprimer
+                  <Icone nom="poubelle" taille={20} />
                 </button>
               </div>
             ))}
-        </section>
-      ))}
+          </section>
+        )
+      })}
 
       <section className="carte">
         <h3>Sauvegarde</h3>
         <p className="aide">
           Tout est enregistré sur ce téléphone. Fais une sauvegarde de temps en temps (QCM, erreurs, historique).
-          Pour la restaurer, importe le fichier de sauvegarde avec le bouton « Importer un fichier ».
+          Pour la restaurer, importe le fichier de sauvegarde avec « Importer un fichier ».
         </p>
-        <button className="secondaire" onClick={sauvegarder}>
-          Créer une sauvegarde
+        <button className="bouton secondaire" onClick={sauvegarder}>
+          <Icone nom="sauver" /> Créer une sauvegarde
         </button>
       </section>
     </div>

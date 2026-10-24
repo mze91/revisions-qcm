@@ -13,7 +13,11 @@ de ses cours**. Issa parle français et n'est pas développeur : réponds en fra
 
 ## Code
 - Vite + React + TypeScript, `vite-plugin-pwa`, Dexie (`src/db.ts`). Pas de routeur : onglets dans `src/App.tsx`.
-- Écrans : `src/screens/` (Reviser, Session, Erreurs, Cours, ChoixChapitres).
+- Écrans : `src/screens/` (Accueil = menu + stats, Reviser = « S'entraîner », Session, Erreurs, Cours,
+  ChoixChapitres). Composants visuels (icônes SVG, anneau, pastille) dans `src/ui.tsx` ; statistiques (série,
+  réussite, maîtrise par chapitre) et couleur par matière dans `src/stats.ts`.
+- Design : police arrondie système, boutons « en relief », retour vert/rouge en bas d'écran, mode sombre.
+  Couleurs dans les variables CSS en haut de `src/styles.css`.
 - Règles métier : `src/correction.ts` (discordances, barème, « Mes erreurs »), `src/importation.ts` (import,
   réimport sans perte d'historique, sauvegarde).
 - Format des fichiers de QCM : `docs/FORMAT-PACK.md`. Feuille de route : `docs/PLAN.md`.

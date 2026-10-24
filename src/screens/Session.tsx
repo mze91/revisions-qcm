@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { db } from '../db'
 import { compterDiscordances, enregistrerReponse, points } from '../correction'
+import { couleurMatiere } from '../stats'
+import { Anneau, Icone } from '../ui'
 import type { Chapitre, Question, Reponse } from '../types'
 
 export interface ParametresSession {
@@ -19,10 +21,16 @@ interface Props {
 }
 
 const MESSAGES_ERREURS = {
-  ajoutee: '➕ Ajoutée à « Mes erreurs »',
-  gardee: '↩︎ Reste dans « Mes erreurs »',
-  retiree: '✅ Retirée de « Mes erreurs »',
+  ajoutee: 'Ajoutée à « Mes erreurs »',
+  gardee: 'Reste dans « Mes erreurs »',
+  retiree: 'Retirée de « Mes erreurs » 🎉',
 }
+
+const BRAVO = ['Parfait !', 'Excellent !', 'Bien joué !', 'Impeccable !', 'Bravo !']
+const PRESQUE = ['Presque !', 'Pas loin !', 'Tout près !']
+const A_REVOIR = ['À revoir', 'On retravaille ça', 'Pas grave, on apprend']
+
+const auHasard = (liste: string[]) => liste[Math.floor(Math.random() * liste.length)]
 
 export default function Session({ parametres, onQuitter }: Props) {
   const [questions, setQuestions] = useState<Question[] | null>(null)
@@ -31,6 +39,7 @@ export default function Session({ parametres, onQuitter }: Props) {
   const [choix, setChoix] = useState<string[]>([])
   const [corrige, setCorrige] = useState(false)
   const [effetErreurs, setEffetErreurs] = useState<keyof typeof MESSAGES_ERREURS | null>(null)
+  const [titre, setTitre] = useState('')
   const [resultats, setResultats] = useState<Resultat[]>([])
 
   useEffect(() => {
@@ -51,7 +60,7 @@ export default function Session({ parametres, onQuitter }: Props) {
       <div className="app session">
         <div className="vide">
           <p>Aucune question à faire.</p>
-          <button className="principal" onClick={() => onQuitter()}>
+          <button className="bouton principal" onClick={() => onQuitter()}>
             Retour
           </button>
         </div>
@@ -64,6 +73,7 @@ export default function Session({ parametres, onQuitter }: Props) {
   const question = questions[index]
   const chapitre = chapitres.get(question.chapitreId)
   const discordances = corrige ? compterDiscordances(question, choix) : 0
+  const ton = discordances === 0 ? 'bon' : 'faux'
 
   const cocher = (lettre: string) => {
     if (corrige) return
@@ -73,10 +83,13 @@ export default function Session({ parametres, onQuitter }: Props) {
   }
 
   const valider = async () => {
+    const d = compterDiscordances(question, choix)
+    setTitre(auHasard(d === 0 ? BRAVO : d === 1 ? PRESQUE : A_REVOIR))
     setCorrige(true)
+    if (d > 0) navigator.vibrate?.(60)
     const effet = await enregistrerReponse(question, choix, parametres.mode)
     setEffetErreurs(effet)
-    setResultats([...resultats, { question, discordances: compterDiscordances(question, choix) }])
+    setResultats([...resultats, { question, discordances: d }])
   }
 
   const suivante = () => {
@@ -92,49 +105,57 @@ export default function Session({ parametres, onQuitter }: Props) {
   }
 
   return (
-    <div className="app session">
+    <div className={`app session ${parametres.mode === 'erreurs' ? 'mode-erreurs' : ''}`}>
       <header className="entete-session">
-        <button className="lien" onClick={quitter}>
-          ✕ Arrêter
+        <button className="icone-bouton" onClick={quitter} aria-label="Arrêter la série">
+          <Icone nom="croix" taille={22} epaisseur={2.4} />
         </button>
-        <span>
-          {parametres.mode === 'erreurs' ? 'Mes erreurs · ' : ''}
-          {index + 1} / {total}
+        <div className="progression">
+          <div style={{ width: `${((index + (corrige ? 1 : 0)) / total) * 100}%` }} />
+        </div>
+        <span className="compteur">
+          {index + 1}/{total}
         </span>
       </header>
-      <div className="progression">
-        <div style={{ width: `${((index + (corrige ? 1 : 0)) / total) * 100}%` }} />
-      </div>
 
-      <main className="contenu">
-        {chapitre && <p className="chapitre-question">{chapitre.nom}</p>}
+      <main className="contenu" key={index}>
+        {chapitre && (
+          <p className="chapitre-question" style={{ color: couleurMatiere(chapitre.matiereId) }}>
+            {parametres.mode === 'erreurs' && <span className="etiquette rouge">Mes erreurs</span>}
+            {chapitre.nom}
+          </p>
+        )}
         <h2 className="enonce">{question.enonce}</h2>
-        <p className="aide">
-          {question.type === 'unique' ? 'Une seule bonne réponse.' : 'Une ou plusieurs bonnes réponses.'}
+        <p className="consigne">
+          {question.type === 'unique' ? 'Une seule bonne réponse' : 'Une ou plusieurs bonnes réponses'}
         </p>
 
         <div className="items">
-          {question.items.map((it) => {
+          {question.items.map((it, i) => {
             const coche = choix.includes(it.lettre)
-            const classe = corrige ? (coche === it.correct ? 'bon' : 'faux') : coche ? 'coche' : ''
+            const juste = coche === it.correct
+            const classe = corrige ? (juste ? 'bon' : 'faux') : coche ? 'coche' : ''
             return (
-              <div key={it.lettre} className={`item ${classe}`}>
+              <div key={it.lettre} className={`item ${classe}`} style={{ animationDelay: `${i * 40}ms` }}>
                 <button className="item-bouton" onClick={() => cocher(it.lettre)} disabled={corrige}>
-                  <span className="lettre">{it.lettre}</span>
+                  <span className="lettre">
+                    {corrige ? <Icone nom={juste ? 'coche' : 'croix'} taille={16} epaisseur={3} /> : it.lettre}
+                  </span>
                   <span className="item-texte">{it.texte}</span>
-                  {corrige && <span className="verdict">{it.correct ? 'VRAI' : 'FAUX'}</span>}
+                  {corrige && <span className={`verdict ${it.correct ? 'vrai' : ''}`}>{it.correct ? 'Vrai' : 'Faux'}</span>}
                 </button>
                 {corrige && (
                   <div className="correction">
                     <p className="ton-choix">
-                      {coche ? 'Tu as coché' : "Tu n'as pas coché"}
-                      {coche === it.correct ? ' ✓' : ' ✗'}
+                      {it.lettre} · {coche ? 'Tu as coché' : "Tu n'as pas coché"} — {juste ? 'bien vu' : 'erreur'}
                     </p>
                     <p>{it.explication}</p>
                     {it.source?.extrait && (
                       <blockquote>
-                        <span className="source">Cours{it.source.page ? `, p. ${it.source.page}` : ''}</span>«{' '}
-                        {it.source.extrait} »
+                        <span className="source">
+                          <Icone nom="livre" taille={14} /> Cours{it.source.page ? `, p. ${it.source.page}` : ''}
+                        </span>
+                        « {it.source.extrait} »
                       </blockquote>
                     )}
                   </div>
@@ -145,24 +166,28 @@ export default function Session({ parametres, onQuitter }: Props) {
         </div>
       </main>
 
-      <div className="barre-action fixe">
+      <div className={`feuille ${corrige ? `visible ${ton}` : ''}`}>
         {corrige && (
-          <div className={`bandeau ${discordances === 0 ? 'bon' : 'faux'}`}>
-            <strong>
-              {discordances === 0
-                ? 'Juste ! 🎉'
-                : `${discordances} discordance${discordances > 1 ? 's' : ''}`}
-            </strong>{' '}
-            · {points(discordances).toLocaleString('fr-FR')} pt
-            {effetErreurs && <div className="effet">{MESSAGES_ERREURS[effetErreurs]}</div>}
+          <div className="feuille-tete">
+            <span className="feuille-icone">
+              <Icone nom={discordances === 0 ? 'coche' : 'croix'} taille={22} epaisseur={3} />
+            </span>
+            <span>
+              <strong>{titre}</strong>
+              <small>
+                {discordances === 0 ? 'Aucune erreur' : `${discordances} discordance${discordances > 1 ? 's' : ''}`} ·{' '}
+                {points(discordances).toLocaleString('fr-FR')} pt
+                {effetErreurs && ` · ${MESSAGES_ERREURS[effetErreurs]}`}
+              </small>
+            </span>
           </div>
         )}
         {corrige ? (
-          <button className="principal" onClick={suivante}>
-            {index + 1 < total ? 'Question suivante' : 'Voir le bilan'}
+          <button className={`bouton ${ton === 'bon' ? 'vert' : 'rouge'}`} onClick={suivante}>
+            {index + 1 < total ? 'Continuer' : 'Voir mon bilan'}
           </button>
         ) : (
-          <button className="principal" onClick={valider}>
+          <button className="bouton principal" onClick={valider}>
             Valider
           </button>
         )}
@@ -183,47 +208,56 @@ function Bilan({
   const justes = resultats.filter((r) => r.discordances === 0).length
   const score = resultats.reduce((s, r) => s + points(r.discordances), 0)
   const ratees = resultats.length - justes
+  const part = resultats.length ? score / resultats.length : 0
+  const message =
+    part >= 0.9 ? 'Exceptionnel 🏆' : part >= 0.7 ? 'Très bon travail 💪' : part >= 0.5 ? 'Bien, continue 👍' : 'On s’accroche 🌱'
+  const couleur = part >= 0.7 ? 'var(--bon)' : part >= 0.5 ? 'var(--orange)' : 'var(--faux)'
   return (
     <div className="app session">
-      <main className="contenu">
-        <h1>Bilan</h1>
-        <div className="carte bilan">
-          <div className="grand-score">
-            {score.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} / {resultats.length}
-          </div>
-          <p>
-            {justes} juste{justes > 1 ? 's' : ''} sur {resultats.length}
-          </p>
-          {mode === 'erreurs' ? (
-            <p className="aide">
-              {justes > 0 && `${justes} QCM retiré${justes > 1 ? 's' : ''} de « Mes erreurs ». `}
-              {ratees > 0 && `${ratees} y reste${ratees > 1 ? 'nt' : ''}.`}
-            </p>
-          ) : (
-            ratees > 0 && (
-              <p className="aide">
-                Les {ratees} QCM ratés sont dans « Mes erreurs ».
-              </p>
-            )
-          )}
+      <main className="contenu bilan">
+        <h1 className="titre centre">{message}</h1>
+        <div className="bilan-anneau">
+          <Anneau valeur={part} taille={180} epaisseur={16} couleur={couleur}>
+            <strong>{score.toLocaleString('fr-FR', { maximumFractionDigits: 1 })}</strong>
+            <small>sur {resultats.length}</small>
+          </Anneau>
         </div>
-        <div className="liste-bilan">
+        <div className="bilan-chiffres">
+          <div className="carte">
+            <strong className="vert-texte">{justes}</strong>
+            <small>juste{justes > 1 ? 's' : ''}</small>
+          </div>
+          <div className="carte">
+            <strong className="rouge-texte">{ratees}</strong>
+            <small>à revoir</small>
+          </div>
+        </div>
+        <p className="aide centre">
+          {mode === 'erreurs'
+            ? `${justes} QCM retiré${justes > 1 ? 's' : ''} de « Mes erreurs »${ratees ? `, ${ratees} y reste${ratees > 1 ? 'nt' : ''}` : ''}.`
+            : ratees > 0
+              ? `Les ${ratees} QCM ratés t'attendent dans « Mes erreurs ».`
+              : 'Aucune erreur, rien à retravailler !'}
+        </p>
+        <div className="liste">
           {resultats.map((r, i) => (
-            <div key={i} className={`ligne-bilan ${r.discordances === 0 ? 'bon' : 'faux'}`}>
-              <span>{r.discordances === 0 ? '✓' : '✗'}</span>
-              <span className="ligne-nom">{r.question.enonce}</span>
+            <div key={i} className={`ligne ${r.discordances === 0 ? 'bon' : 'faux'}`}>
+              <span className="ligne-icone">
+                <Icone nom={r.discordances === 0 ? 'coche' : 'croix'} taille={14} epaisseur={3} />
+              </span>
+              <span className="ligne-texte">{r.question.enonce}</span>
             </div>
           ))}
         </div>
       </main>
-      <div className="barre-action fixe">
+      <div className="feuille visible">
         {ratees > 0 && (
-          <button className="secondaire" onClick={() => onQuitter(true)}>
-            Voir « Mes erreurs »
+          <button className="bouton rouge" onClick={() => onQuitter(true)}>
+            <Icone nom="cible" /> Retravailler mes erreurs
           </button>
         )}
-        <button className="principal" onClick={() => onQuitter()}>
-          Terminer
+        <button className="bouton secondaire" onClick={() => onQuitter()}>
+          Retour à l'accueil
         </button>
       </div>
     </div>
