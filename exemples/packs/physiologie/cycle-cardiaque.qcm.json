@@ -1,0 +1,830 @@
+{
+  "format": "qcm-revision",
+  "version": 1,
+  "matiere": {
+    "id": "physiologie",
+    "nom": "Physiologie"
+  },
+  "chapitres": [
+    {
+      "id": "cycle-cardiaque",
+      "nom": "Le cycle cardiaque",
+      "ordre": 3,
+      "source": "Physio_CM3_cycle_cardiaque.pdf",
+      "questions": [
+        {
+          "id": "q001",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos des valves cardiaques, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "La valve tricuspide est une valve sigmoïde.",
+              "correct": false,
+              "explication": "Faux. La tricuspide est la valve auriculo-ventriculaire droite. Les valves sigmoïdes sont la valve aortique et la valve pulmonaire.",
+              "source": {
+                "page": 1,
+                "extrait": "la valve mitrale à gauche et la valve tricuspide à droite. Les valves sigmoïdes séparent les ventricules des artères : la valve aortique à gauche et la valve pulmonaire à droite."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Les valves sigmoïdes séparent les ventricules des artères.",
+              "correct": true,
+              "explication": "Vrai. C'est la définition donnée par le cours (valve aortique à gauche, valve pulmonaire à droite).",
+              "source": {
+                "page": 1,
+                "extrait": "Les valves sigmoïdes séparent les ventricules des artères : la valve aortique à gauche et la valve pulmonaire à droite."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "La fermeture d'une valve dépend uniquement de la différence de pression de part et d'autre de cette valve.",
+              "correct": true,
+              "explication": "Vrai. Le mouvement des valves dépend uniquement de la différence de pression de part et d'autre de la valve.",
+              "source": {
+                "page": 1,
+                "extrait": "elles dépendent uniquement de la différence de pression de part et d'autre de la valve."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "L'ouverture des valves cardiaques est un phénomène actif.",
+              "correct": false,
+              "explication": "Faux. Selon le cours, l'ouverture et la fermeture des valves sont des phénomènes passifs.",
+              "source": {
+                "page": 1,
+                "extrait": "L'ouverture et la fermeture des valves sont des phénomènes passifs"
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "La valve mitrale sépare l'oreillette gauche du ventricule gauche.",
+              "correct": true,
+              "explication": "Vrai. La valve mitrale est la valve auriculo-ventriculaire gauche : elle sépare l'oreillette du ventricule à gauche.",
+              "source": {
+                "page": 1,
+                "extrait": "Les valves auriculo-ventriculaires séparent les oreillettes des ventricules : la valve mitrale à gauche et la valve tricuspide à droite."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q002",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "Concernant la durée du cycle cardiaque à une fréquence de 75 battements par minute, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Quand la fréquence cardiaque augmente, c'est surtout la durée de la systole qui diminue.",
+              "correct": false,
+              "explication": "Faux. Le cours précise que c'est surtout la durée de la diastole qui diminue.",
+              "source": {
+                "page": 1,
+                "extrait": "Lorsque la fréquence cardiaque augmente, c'est surtout la durée de la diastole qui diminue."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "La systole ventriculaire dure environ 0,5 seconde.",
+              "correct": false,
+              "explication": "Faux. La systole ventriculaire dure environ 0,3 seconde ; c'est la diastole qui dure environ 0,5 seconde.",
+              "source": {
+                "page": 1,
+                "extrait": "environ 0,3 seconde pour la systole ventriculaire et 0,5 seconde pour la diastole."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Un cycle cardiaque dure environ 0,8 seconde.",
+              "correct": true,
+              "explication": "Vrai. À 75 battements par minute, un cycle dure environ 0,8 seconde.",
+              "source": {
+                "page": 1,
+                "extrait": "À une fréquence de 75 battements par minute, un cycle dure environ 0,8 seconde"
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "La diastole dure plus longtemps que la systole ventriculaire.",
+              "correct": true,
+              "explication": "Vrai. La diastole dure environ 0,5 seconde, contre environ 0,3 seconde pour la systole ventriculaire.",
+              "source": {
+                "page": 1,
+                "extrait": "environ 0,3 seconde pour la systole ventriculaire et 0,5 seconde pour la diastole."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "La systole ventriculaire occupe plus de la moitié de la durée du cycle.",
+              "correct": false,
+              "explication": "Faux. Elle dure environ 0,3 seconde sur un cycle d'environ 0,8 seconde, donc moins de la moitié.",
+              "source": {
+                "page": 1,
+                "extrait": "un cycle dure environ 0,8 seconde : environ 0,3 seconde pour la systole ventriculaire"
+              }
+            }
+          ]
+        },
+        {
+          "id": "q003",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos de la contraction isovolumique, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Elle débute à la fermeture des valves auriculo-ventriculaires.",
+              "correct": true,
+              "explication": "Vrai. La contraction isovolumique débute à la fermeture des valves auriculo-ventriculaires.",
+              "source": {
+                "page": 1,
+                "extrait": "La contraction isovolumique débute à la fermeture des valves auriculo-ventriculaires."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Pendant cette phase, les valves sigmoïdes sont ouvertes.",
+              "correct": false,
+              "explication": "Faux. Pendant la contraction isovolumique, toutes les valves sont fermées.",
+              "source": {
+                "page": 1,
+                "extrait": "Pendant cette phase, toutes les valves sont fermées"
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Elle débute à la fermeture des valves sigmoïdes.",
+              "correct": false,
+              "explication": "Faux. C'est la relaxation isovolumique qui débute à la fermeture des valves sigmoïdes. La contraction isovolumique débute à la fermeture des valves auriculo-ventriculaires.",
+              "source": {
+                "page": 1,
+                "extrait": "La relaxation isovolumique débute à la fermeture des valves sigmoïdes."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "La pression ventriculaire augmente rapidement pendant cette phase.",
+              "correct": true,
+              "explication": "Vrai. La pression ventriculaire augmente rapidement, sans variation de volume.",
+              "source": {
+                "page": 1,
+                "extrait": "la pression ventriculaire augmente rapidement sans variation du volume ventriculaire."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Le volume ventriculaire diminue pendant cette phase.",
+              "correct": false,
+              "explication": "Faux. Le volume ventriculaire ne varie pas : c'est le sens de « isovolumique ».",
+              "source": {
+                "page": 1,
+                "extrait": "la pression ventriculaire augmente rapidement sans variation du volume ventriculaire."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q004",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos de la phase d'éjection du ventricule gauche, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Elle s'accompagne de l'ouverture des valves sigmoïdes.",
+              "correct": true,
+              "explication": "Vrai. Quand la pression ventriculaire dépasse la pression aortique, les valves sigmoïdes s'ouvrent.",
+              "source": {
+                "page": 1,
+                "extrait": "d'environ 80 mmHg : les valves sigmoïdes s'ouvrent."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "La pression ventriculaire gauche atteint un maximum d'environ 120 mmHg.",
+              "correct": true,
+              "explication": "Vrai. Pendant l'éjection, la pression ventriculaire gauche atteint un maximum d'environ 120 mmHg.",
+              "source": {
+                "page": 1,
+                "extrait": "La pression ventriculaire gauche atteint alors un maximum d'environ 120 mmHg."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Au début de l'éjection, la pression aortique est d'environ 120 mmHg.",
+              "correct": false,
+              "explication": "Faux. La pression aortique à dépasser est d'environ 80 mmHg. 120 mmHg correspond au maximum de la pression ventriculaire gauche.",
+              "source": {
+                "page": 1,
+                "extrait": "dépasse la pression aortique, d'environ 80 mmHg"
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "Elle commence lorsque la pression ventriculaire gauche dépasse la pression aortique.",
+              "correct": true,
+              "explication": "Vrai. L'éjection commence quand la pression ventriculaire gauche dépasse la pression aortique.",
+              "source": {
+                "page": 1,
+                "extrait": "L'éjection commence lorsque la pression ventriculaire gauche dépasse la pression aortique"
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Elle s'accompagne de l'ouverture des valves auriculo-ventriculaires.",
+              "correct": false,
+              "explication": "Faux. Les valves auriculo-ventriculaires s'ouvrent au début du remplissage, pendant la diastole. À l'éjection, ce sont les valves sigmoïdes qui s'ouvrent.",
+              "source": {
+                "page": 1,
+                "extrait": "Le remplissage ventriculaire commence lorsque la pression ventriculaire devient inférieure à la pression auriculaire : les valves auriculo-ventriculaires s'ouvrent."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q005",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "Au repos, chez un sujet dont le VTD est de 120 mL et le VTS de 50 mL, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Le VES est d'environ 70 mL.",
+              "correct": true,
+              "explication": "Vrai. VES = VTD - VTS = 120 - 50 = environ 70 mL.",
+              "source": {
+                "page": 1,
+                "extrait": "Le volume d'éjection systolique (VES), égal à VTD - VTS, est donc d'environ 70 mL."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Le VES est égal à la somme du VTD et du VTS.",
+              "correct": false,
+              "explication": "Faux. Le VES est égal à la différence VTD - VTS, pas à leur somme.",
+              "source": {
+                "page": 1,
+                "extrait": "Le volume d'éjection systolique (VES), égal à VTD - VTS"
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "La fraction d'éjection est le rapport du VTS sur le VTD.",
+              "correct": false,
+              "explication": "Faux. La fraction d'éjection est le rapport du VES sur le VTD.",
+              "source": {
+                "page": 1,
+                "extrait": "La fraction d'éjection, rapport du VES sur le VTD"
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "Le VES est d'environ 170 mL.",
+              "correct": false,
+              "explication": "Faux. Le VES est égal à VTD - VTS, soit 120 - 50 = environ 70 mL.",
+              "source": {
+                "page": 1,
+                "extrait": "Le volume d'éjection systolique (VES), égal à VTD - VTS, est donc d'environ 70 mL."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "La fraction d'éjection est normalement d'environ 40 %.",
+              "correct": false,
+              "explication": "Faux. Elle est normalement d'environ 60 %.",
+              "source": {
+                "page": 1,
+                "extrait": "La fraction d'éjection, rapport du VES sur le VTD, est normalement d'environ 60 %."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q006",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos de la relaxation isovolumique, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "La pression ventriculaire chute rapidement pendant cette phase.",
+              "correct": true,
+              "explication": "Vrai. La pression ventriculaire chute rapidement, sans variation de volume.",
+              "source": {
+                "page": 1,
+                "extrait": "la pression ventriculaire chute rapidement sans variation de volume."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Pendant cette phase, toutes les valves sont fermées.",
+              "correct": true,
+              "explication": "Vrai. Toutes les valves sont à nouveau fermées pendant la relaxation isovolumique.",
+              "source": {
+                "page": 1,
+                "extrait": "Toutes les valves sont à nouveau fermées"
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Elle débute à la fermeture des valves sigmoïdes.",
+              "correct": true,
+              "explication": "Vrai. La relaxation isovolumique débute à la fermeture des valves sigmoïdes.",
+              "source": {
+                "page": 1,
+                "extrait": "La relaxation isovolumique débute à la fermeture des valves sigmoïdes."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "Le volume ventriculaire augmente pendant cette phase.",
+              "correct": false,
+              "explication": "Faux. La pression chute sans variation de volume. Le volume n'augmente qu'au remplissage.",
+              "source": {
+                "page": 1,
+                "extrait": "la pression ventriculaire chute rapidement sans variation de volume."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Elle fait partie de la systole ventriculaire.",
+              "correct": false,
+              "explication": "Faux. Le cours la classe dans la diastole ventriculaire, dont elle est la première phase.",
+              "source": {
+                "page": 1,
+                "extrait": "III. LA DIASTOLE VENTRICULAIRE 1) La relaxation isovolumique"
+              }
+            }
+          ]
+        },
+        {
+          "id": "q007",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos du remplissage ventriculaire, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Il commence lorsque la pression ventriculaire devient inférieure à la pression auriculaire.",
+              "correct": true,
+              "explication": "Vrai. C'est ce qui provoque l'ouverture des valves auriculo-ventriculaires.",
+              "source": {
+                "page": 1,
+                "extrait": "Le remplissage ventriculaire commence lorsque la pression ventriculaire devient inférieure à la pression auriculaire"
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Le diastasis correspond au remplissage rapide.",
+              "correct": false,
+              "explication": "Faux. Le diastasis est le remplissage lent, qui suit le remplissage rapide.",
+              "source": {
+                "page": 1,
+                "extrait": "puis un remplissage lent, appelé diastasis."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Il commence par l'ouverture des valves sigmoïdes.",
+              "correct": false,
+              "explication": "Faux. Le remplissage commence par l'ouverture des valves auriculo-ventriculaires.",
+              "source": {
+                "page": 1,
+                "extrait": "inférieure à la pression auriculaire : les valves auriculo-ventriculaires s'ouvrent."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "Le remplissage rapide est passif.",
+              "correct": true,
+              "explication": "Vrai. Le cours décrit un remplissage rapide, passif.",
+              "source": {
+                "page": 1,
+                "extrait": "On distingue un remplissage rapide, passif, puis un remplissage lent, appelé diastasis."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Au repos, la systole auriculaire assure environ 80 % du remplissage ventriculaire.",
+              "correct": false,
+              "explication": "Faux. Au repos, la systole auriculaire n'assure qu'environ 20 % du remplissage ventriculaire.",
+              "source": {
+                "page": 1,
+                "extrait": "au repos, elle n'assure qu'environ 20 % du remplissage ventriculaire."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q008",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos des bruits du cœur, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Le deuxième bruit (B2) correspond à la fermeture des valves sigmoïdes.",
+              "correct": true,
+              "explication": "Vrai. B2 correspond à la fermeture des valves sigmoïdes.",
+              "source": {
+                "page": 2,
+                "extrait": "Le deuxième bruit du cœur (B2) correspond à la fermeture des valves sigmoïdes."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Le premier bruit (B1) correspond à la fermeture des valves auriculo-ventriculaires.",
+              "correct": true,
+              "explication": "Vrai. B1 correspond à la fermeture des valves auriculo-ventriculaires.",
+              "source": {
+                "page": 2,
+                "extrait": "Le premier bruit du cœur (B1) correspond à la fermeture des valves auriculo-ventriculaires."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Le premier bruit (B1) marque le début de la diastole ventriculaire.",
+              "correct": false,
+              "explication": "Faux. B1 marque le début de la systole ventriculaire. C'est B2 qui marque le début de la diastole.",
+              "source": {
+                "page": 2,
+                "extrait": "Il marque le début de la systole ventriculaire."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "Le deuxième bruit (B2) correspond à l'ouverture des valves sigmoïdes.",
+              "correct": false,
+              "explication": "Faux. B2 correspond à la fermeture, et non à l'ouverture, des valves sigmoïdes.",
+              "source": {
+                "page": 2,
+                "extrait": "Le deuxième bruit du cœur (B2) correspond à la fermeture des valves sigmoïdes."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Le deuxième bruit (B2) marque le début de la diastole ventriculaire.",
+              "correct": true,
+              "explication": "Vrai. B2 marque le début de la diastole ventriculaire.",
+              "source": {
+                "page": 2,
+                "extrait": "Il marque le début de la diastole ventriculaire."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q009",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos de l'électrocardiogramme (ECG), quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Le complexe QRS précède la contraction ventriculaire.",
+              "correct": true,
+              "explication": "Vrai. Le complexe QRS précède la contraction ventriculaire.",
+              "source": {
+                "page": 2,
+                "extrait": "Le complexe QRS correspond à la dépolarisation des ventricules et précède la contraction ventriculaire."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Le complexe QRS correspond à la repolarisation des ventricules.",
+              "correct": false,
+              "explication": "Faux. Le complexe QRS correspond à la dépolarisation des ventricules. La repolarisation des ventricules correspond à l'onde T.",
+              "source": {
+                "page": 2,
+                "extrait": "Le complexe QRS correspond à la dépolarisation des ventricules"
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "L'onde P correspond à la dépolarisation des oreillettes.",
+              "correct": true,
+              "explication": "Vrai. L'onde P correspond à la dépolarisation des oreillettes.",
+              "source": {
+                "page": 2,
+                "extrait": "l'onde P correspond à la dépolarisation des oreillettes et précède la systole auriculaire."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "L'onde P suit la systole auriculaire.",
+              "correct": false,
+              "explication": "Faux. L'onde P précède la systole auriculaire.",
+              "source": {
+                "page": 2,
+                "extrait": "l'onde P correspond à la dépolarisation des oreillettes et précède la systole auriculaire."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "L'onde T correspond à la repolarisation des ventricules.",
+              "correct": true,
+              "explication": "Vrai. L'onde T correspond à la repolarisation des ventricules.",
+              "source": {
+                "page": 2,
+                "extrait": "L'onde T correspond à la repolarisation des ventricules."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q010",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "En comparant le cœur droit et le cœur gauche, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Les phases du cycle cardiaque sont les mêmes à droite et à gauche.",
+              "correct": true,
+              "explication": "Vrai. Les phases du cycle sont les mêmes à droite et à gauche ; seules les pressions diffèrent.",
+              "source": {
+                "page": 2,
+                "extrait": "Les phases du cycle sont les mêmes à droite et à gauche"
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Le ventricule droit éjecte un volume plus faible que le ventricule gauche.",
+              "correct": false,
+              "explication": "Faux. Malgré des pressions plus faibles, les volumes éjectés par les deux ventricules sont égaux.",
+              "source": {
+                "page": 2,
+                "extrait": "En revanche, les volumes éjectés par les deux ventricules sont égaux."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "La pression systolique du ventricule droit est d'environ 120 mmHg.",
+              "correct": false,
+              "explication": "Faux. Elle est d'environ 25 mmHg. Environ 120 mmHg est le maximum de pression du ventricule gauche.",
+              "source": {
+                "page": 2,
+                "extrait": "la pression systolique du ventricule droit est d'environ 25 mmHg."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "La pression systolique du ventricule droit est d'environ 25 mmHg.",
+              "correct": true,
+              "explication": "Vrai. La pression systolique du ventricule droit est d'environ 25 mmHg.",
+              "source": {
+                "page": 2,
+                "extrait": "la pression systolique du ventricule droit est d'environ 25 mmHg."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Les pressions sont plus élevées dans le cœur droit que dans le cœur gauche.",
+              "correct": false,
+              "explication": "Faux. Les pressions sont beaucoup plus faibles à droite.",
+              "source": {
+                "page": 2,
+                "extrait": "mais les pressions sont beaucoup plus faibles à droite"
+              }
+            }
+          ]
+        },
+        {
+          "id": "q011",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos du débit cardiaque, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Au repos, le débit cardiaque est d'environ 5 L/min.",
+              "correct": true,
+              "explication": "Vrai. Au repos, le débit cardiaque est d'environ 5 L/min.",
+              "source": {
+                "page": 2,
+                "extrait": "Au repos, il est d'environ 5 L/min."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Le débit cardiaque est le rapport du volume d'éjection systolique sur la fréquence cardiaque.",
+              "correct": false,
+              "explication": "Faux. C'est un produit, pas un rapport : débit = VES × fréquence cardiaque.",
+              "source": {
+                "page": 2,
+                "extrait": "Le débit cardiaque est le produit du volume d'éjection systolique par la fréquence cardiaque."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Le débit cardiaque est le produit du volume d'éjection systolique par la fréquence cardiaque.",
+              "correct": true,
+              "explication": "Vrai. C'est la définition du cours : débit = VES × fréquence cardiaque.",
+              "source": {
+                "page": 2,
+                "extrait": "Le débit cardiaque est le produit du volume d'éjection systolique par la fréquence cardiaque."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "À VES constant, une augmentation de la fréquence cardiaque augmente le débit cardiaque.",
+              "correct": true,
+              "explication": "Vrai. Le débit étant le produit du VES par la fréquence, il augmente avec la fréquence si le VES ne change pas.",
+              "source": {
+                "page": 2,
+                "extrait": "Le débit cardiaque est le produit du volume d'éjection systolique par la fréquence cardiaque."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Au repos, le débit cardiaque est d'environ 70 mL/min.",
+              "correct": false,
+              "explication": "Faux. Il est d'environ 5 L/min. 70 mL correspond au VES au repos, pas au débit.",
+              "source": {
+                "page": 2,
+                "extrait": "Au repos, il est d'environ 5 L/min."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q012",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "À propos de la précharge et de la postcharge, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Une augmentation de la postcharge augmente le VES.",
+              "correct": false,
+              "explication": "Faux. Une augmentation de la postcharge diminue le VES.",
+              "source": {
+                "page": 2,
+                "extrait": "Une augmentation de la postcharge diminue le VES."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "La précharge est représentée par le VTD.",
+              "correct": true,
+              "explication": "Vrai. La précharge est représentée par le volume télédiastolique.",
+              "source": {
+                "page": 2,
+                "extrait": "elle est représentée par le VTD."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Selon la loi de Frank-Starling, plus le VTD augmente, plus le VES augmente, dans les limites physiologiques.",
+              "correct": true,
+              "explication": "Vrai. C'est l'énoncé de la loi de Frank-Starling dans le cours.",
+              "source": {
+                "page": 2,
+                "extrait": "Selon la loi de Frank-Starling, plus le VTD augmente, plus la force de contraction et le VES augmentent, dans les limites physiologiques."
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "La précharge correspond au degré d'étirement des fibres ventriculaires en fin de diastole.",
+              "correct": true,
+              "explication": "Vrai. C'est la définition de la précharge donnée par le cours.",
+              "source": {
+                "page": 2,
+                "extrait": "La précharge correspond au degré d'étirement des fibres ventriculaires en fin de diastole"
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Pour le ventricule gauche, la postcharge est représentée par la pression aortique.",
+              "correct": true,
+              "explication": "Vrai. Pour le ventricule gauche, la postcharge est représentée par la pression aortique.",
+              "source": {
+                "page": 2,
+                "extrait": "pour le ventricule gauche, elle est représentée par la pression aortique."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q013",
+          "type": "multiple",
+          "origine": "genere",
+          "enonce": "Concernant l'enchaînement des événements du cycle cardiaque, quelle(s) est (sont) la (les) proposition(s) exacte(s) ?",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "Pendant l'éjection, toutes les valves sont fermées.",
+              "correct": false,
+              "explication": "Faux. Pendant l'éjection, les valves sigmoïdes sont ouvertes. Toutes les valves sont fermées seulement pendant les phases isovolumiques.",
+              "source": {
+                "page": 1,
+                "extrait": "dépasse la pression aortique, d'environ 80 mmHg : les valves sigmoïdes s'ouvrent."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "Les valves auriculo-ventriculaires s'ouvrent dès le début de la relaxation isovolumique.",
+              "correct": false,
+              "explication": "Faux. Pendant la relaxation isovolumique, toutes les valves sont fermées. Les valves auriculo-ventriculaires ne s'ouvrent qu'au début du remplissage.",
+              "source": {
+                "page": 1,
+                "extrait": "La relaxation isovolumique débute à la fermeture des valves sigmoïdes. Toutes les valves sont à nouveau fermées"
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "La systole auriculaire a lieu en fin de diastole ventriculaire.",
+              "correct": true,
+              "explication": "Vrai. En fin de diastole, la systole auriculaire complète le remplissage.",
+              "source": {
+                "page": 1,
+                "extrait": "En fin de diastole, la systole auriculaire complète le remplissage"
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "La fermeture des valves auriculo-ventriculaires marque le début de la systole ventriculaire.",
+              "correct": true,
+              "explication": "Vrai. B1, dû à la fermeture des valves auriculo-ventriculaires, marque le début de la systole ventriculaire.",
+              "source": {
+                "page": 2,
+                "extrait": "Le premier bruit du cœur (B1) correspond à la fermeture des valves auriculo-ventriculaires. Il marque le début de la systole ventriculaire."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "Le diastasis précède le remplissage rapide.",
+              "correct": false,
+              "explication": "Faux. Le remplissage rapide vient d'abord, puis le remplissage lent, appelé diastasis.",
+              "source": {
+                "page": 1,
+                "extrait": "On distingue un remplissage rapide, passif, puis un remplissage lent, appelé diastasis."
+              }
+            }
+          ]
+        },
+        {
+          "id": "q014",
+          "type": "unique",
+          "origine": "genere",
+          "enonce": "Quel événement marque le début de l'éjection ventriculaire gauche ? (une seule réponse)",
+          "items": [
+            {
+              "lettre": "A",
+              "texte": "La fermeture des valves sigmoïdes.",
+              "correct": false,
+              "explication": "Faux. La fermeture des valves sigmoïdes marque le début de la relaxation isovolumique. À l'éjection, ces valves s'ouvrent.",
+              "source": {
+                "page": 1,
+                "extrait": "La relaxation isovolumique débute à la fermeture des valves sigmoïdes."
+              }
+            },
+            {
+              "lettre": "B",
+              "texte": "La fermeture des valves auriculo-ventriculaires.",
+              "correct": false,
+              "explication": "Faux. La fermeture des valves auriculo-ventriculaires marque le début de la contraction isovolumique, pas celui de l'éjection.",
+              "source": {
+                "page": 1,
+                "extrait": "La contraction isovolumique débute à la fermeture des valves auriculo-ventriculaires."
+              }
+            },
+            {
+              "lettre": "C",
+              "texte": "Le dépassement de la pression aortique par la pression ventriculaire gauche.",
+              "correct": true,
+              "explication": "Vrai. L'éjection commence lorsque la pression ventriculaire gauche dépasse la pression aortique.",
+              "source": {
+                "page": 1,
+                "extrait": "L'éjection commence lorsque la pression ventriculaire gauche dépasse la pression aortique"
+              }
+            },
+            {
+              "lettre": "D",
+              "texte": "Le deuxième bruit du cœur.",
+              "correct": false,
+              "explication": "Faux. B2 correspond à la fermeture des valves sigmoïdes et marque le début de la diastole ventriculaire.",
+              "source": {
+                "page": 2,
+                "extrait": "Le deuxième bruit du cœur (B2) correspond à la fermeture des valves sigmoïdes. Il marque le début de la diastole ventriculaire."
+              }
+            },
+            {
+              "lettre": "E",
+              "texte": "L'onde T de l'électrocardiogramme.",
+              "correct": false,
+              "explication": "Faux. L'onde T correspond à la repolarisation des ventricules. C'est le complexe QRS qui précède la contraction ventriculaire.",
+              "source": {
+                "page": 2,
+                "extrait": "L'onde T correspond à la repolarisation des ventricules."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
