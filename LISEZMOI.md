@@ -1,5 +1,13 @@
 # Révisions QCM — mode d'emploi pour Issa
 
+## Installer l'appli sur l'iPhone de ta sœur
+1. Ouvre **https://mze91.github.io/revisions-qcm/** dans **Safari**.
+2. Touche le bouton Partager (le carré avec une flèche), puis **« Sur l'écran d'accueil »**.
+3. L'icône « QCM » apparaît. L'appli fonctionne ensuite même sans connexion.
+
+Elle se met à jour toute seule quand tu publies une nouvelle version. Ses données ne sont pas touchées par
+ces mises à jour.
+
 ## Ajouter un cours
 1. Dépose le cours de ta sœur dans `cours/<Matière>/`. Formats acceptés : PDF, Word, PowerPoint, photos de
    pages, notes manuscrites.
