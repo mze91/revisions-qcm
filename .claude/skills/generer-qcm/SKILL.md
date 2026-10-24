@@ -71,7 +71,9 @@ node outils/verifier-pack.mjs packs/<matiere-id>/<chapitre-id>.qcm.json --corrig
 
 Corrige jusqu'à obtenir « ✓ Fichier valide ». Un extrait « INTROUVABLE » veut dire que tu l'as reformulé :
 recopie-le exactement depuis `texte.md`. Prends aussi au sérieux les avertissements (répartition des bonnes
-réponses, item toujours vrai à la même lettre).
+réponses, item toujours vrai à la même lettre). Si une lettre est trop souvent vraie, lance
+`node outils/melanger-items.mjs <pack>` puis revérifie. C'est pour cela qu'une explication ne cite jamais de
+lettre.
 
 Relis ensuite chaque question en te demandant :
 1. L'extrait suffit-il à trancher l'item ?
