@@ -4,6 +4,7 @@
 export interface SourceCours {
   page?: number
   extrait: string
+  zones?: number[][] // rectangles [x, y, largeur, hauteur] en fractions de la page, pour surligner l'extrait
 }
 
 export interface ItemPack {
@@ -19,7 +20,8 @@ export interface QuestionPack {
   type: 'multiple' | 'unique'
   enonce: string
   items: ItemPack[]
-  origine?: 'genere' | 'annale'
+  origine?: 'genere' | 'annale' // « annale » = QCM repris tel quel (tutorat ou vraie annale d'examen)
+  annee?: string // pour une vraie annale d'examen : année ou session (ex. « 2024 » ou « Janvier 2024 »)
 }
 
 export interface ChapitrePack {
@@ -28,6 +30,8 @@ export interface ChapitrePack {
   ordre?: number
   groupe?: string // partie de la matière, ex. « Pharmacologie »
   source?: string
+  pages?: number // nombre de pages du cours publié
+  cours?: string // chemin du paquet chiffré des pages, ajouté à la publication
   questions: QuestionPack[]
 }
 
@@ -52,6 +56,8 @@ export interface Chapitre {
   groupe?: string
   ordre: number
   source?: string
+  pages?: number
+  cours?: string
   importeLe: number
 }
 
@@ -65,7 +71,7 @@ export interface Reponse {
   id?: number
   questionId: string
   date: number
-  mode: 'entrainement' | 'erreurs'
+  mode: 'entrainement' | 'erreurs' | 'examen'
   choix: string[]
   discordances: number
 }
@@ -76,3 +82,23 @@ export interface Erreur {
   derniereFois: number
   nbEchecs: number
 }
+
+export interface ReponseExamen {
+  questionId: string
+  choix: string[]
+  aRevoir?: boolean
+}
+
+export interface Examen {
+  id?: number
+  matiereId: string
+  debut: number
+  fin?: number
+  dureeMax: number // en secondes
+  bareme: Bareme
+  questions: ReponseExamen[]
+  points?: number
+  justes?: number
+}
+
+export type Bareme = 'discordances' | 'tout-ou-rien'

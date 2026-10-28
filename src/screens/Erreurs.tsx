@@ -3,11 +3,13 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
 import { melanger } from '../correction'
 import { Icone } from '../ui'
+import { useOuvrirCours } from '../lecteur'
 import ChoixChapitres from './ChoixChapitres'
 import type { ParametresSession } from './Session'
 import type { Question } from '../types'
 
 export default function Erreurs({ onLancer }: { onLancer: (p: ParametresSession) => void }) {
+  const ouvrirCours = useOuvrirCours()
   const donnees = useLiveQuery(async () => {
     const erreurs = await db.erreurs.orderBy('ajouteLe').reverse().toArray()
     const questions = (await db.questions.bulkGet(erreurs.map((e) => e.questionId))).filter(
@@ -16,7 +18,15 @@ export default function Erreurs({ onLancer }: { onLancer: (p: ParametresSession)
     const compte = new Map<string, number>()
     for (const q of questions) compte.set(q.chapitreId, (compte.get(q.chapitreId) ?? 0) + 1)
     const echecs = new Map(erreurs.map((e) => [e.questionId, e.nbEchecs]))
+    // Pour « Voir dans le cours » : le premier item raté lors de la dernière réponse.
+    const itemRate = new Map<string, Question['items'][number]>()
+    for (const q of questions) {
+      const derniere = await db.reponses.where('questionId').equals(q.id).last()
+      const it = q.items.find((i) => i.correct !== (derniere?.choix ?? []).includes(i.lettre)) ?? q.items[0]
+      itemRate.set(q.id, it)
+    }
     return {
+      itemRate,
       questions,
       compte,
       echecs,
@@ -29,7 +39,7 @@ export default function Erreurs({ onLancer }: { onLancer: (p: ParametresSession)
   const [voirListe, setVoirListe] = useState(false)
 
   if (!donnees) return null
-  const { questions, compte, echecs, matieres, chapitres } = donnees
+  const { questions, compte, echecs, matieres, chapitres, itemRate } = donnees
 
   if (questions.length === 0) {
     return (
@@ -81,6 +91,18 @@ export default function Erreurs({ onLancer }: { onLancer: (p: ParametresSession)
               </span>
               <span className="ligne-texte">{q.enonce}</span>
               {(echecs.get(q.id) ?? 1) > 1 && <span className="ligne-fois">×{echecs.get(q.id)}</span>}
+              {chapitres.find((c) => c.id === q.chapitreId)?.cours && (
+                <button
+                  className="icone-bouton petit"
+                  aria-label="Voir dans le cours"
+                  onClick={() => {
+                    const it = itemRate.get(q.id)
+                    ouvrirCours({ chapitreId: q.chapitreId, page: it?.source.page, zones: it?.source.zones, extrait: it?.source.extrait })
+                  }}
+                >
+                  <Icone nom="livre" taille={18} />
+                </button>
+              )}
             </div>
           ))}
         </div>

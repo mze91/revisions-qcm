@@ -1,34 +1,32 @@
 # Feuille de route
 
-## Étape 1 — Première version ✅ (24/10/2026)
-- Appli installable sur téléphone, données sur l'appareil, sauvegarde dans un fichier.
-- Matières et chapitres, import des fichiers de QCM, réimport sans perte d'historique.
-- Choix des chapitres, mode entraînement : correction immédiate item par item, explication et extrait du cours.
-- Barème médecine par défaut (1 / 0,5 / 0,2 / 0 selon les discordances).
-- Onglet « Mes erreurs » : entrée automatique, sortie seulement après réussite depuis l'onglet.
-- Côté Issa : commande `/generer-qcm` (cours PDF, Word, PowerPoint, photos, manuscrit) + vérificateur.
+Règle absolue : 100 % du contenu vient des fiches du tutorat et des annales de la sœur d'Issa.
+Pas d'Internet, pas d'invention. Chaque item cite le cours mot pour mot (vérifié par l'outil).
 
-## Étape 2 — Mode examen
-- Modalités par matière (`matiere.modalites` dans le pack, modifiables dans l'appli) : durée, nombre de
-  questions, barème (discordances, tout-ou-rien, points négatifs), type de QCM.
-- Examen chronométré, tirage selon les modalités, aucune correction avant la fin, puis correction complète
-  et note. Les QCM ratés vont dans « Mes erreurs ».
-- Sauvegarde de l'examen en cours (si l'appli se ferme).
+## Fait
+- **Première version** (24/10/2026) : entraînement corrigé item par item, choix des fiches, « Mes erreurs ».
+- **Nouveau design** (24/10/2026) : accueil avec statistiques, 4 onglets, mode sombre.
+- **Cours intégrés** (28/10/2026) : plus aucun import, QCM chiffrés (code d'accès), synchronisation
+  automatique. UE1 : 67 fiches, 902 QCM. UE2 : 30 fiches, 446 QCM.
+- **Lecteur de cours** (28/10/2026) : les vraies pages des fiches (schémas, tableaux) sont chiffrées dans
+  l'appli. Chaque correction a un bouton « Voir dans le cours » qui ouvre la bonne page et surligne le passage
+  (environ 95 % des passages sont repérés ; sinon, la page s'ouvre sans surlignage).
+- **Page par fiche** : lire la fiche, réviser ses QCM, reprendre ses erreurs.
+- **Examen blanc** : choix de l'UE et des parties, nombre de QCM, durée, barème (discordances ou tout ou
+  rien), chrono qui continue même si l'appli est fermée, QCM « à revoir », grille de navigation, correction à
+  la fin, note sur 20 et détail par partie, historique des examens.
+- **Révision du jour** : répétition espacée, à partir de son historique (raté → 1 jour ; réussi 1 à 5 fois de
+  suite → 2, 5, 12, 30, 60 jours).
 
-## Étape 3 — Annales
-- Issa dépose les photos ou scans dans `annales/<matiere>/`. Claude les retranscrit en QCM
-  (`origine: "annale"`), avec la correction officielle si elle existe. Sinon, la correction est justifiée par
-  le cours, et les items que le cours ne permet pas de trancher sont signalés.
-- La génération lit les annales de la matière pour imiter leur style : tournures, pièges fréquents, niveau
-  de détail, proportion de bonnes réponses.
-- Filtre « annales seulement » dans l'appli.
-
-## Étape 4 — QCM à schéma
-- Claude extrait le schéma du cours (image de la page recadrée), place des numéros sur les légendes, et
-  l'enregistre dans le pack (`questions[].schema`, image intégrée).
-- Items du type « 3 = ventricule gauche », affichage zoomable au-dessus des items.
-
-## Étape 5 — Plus tard, si besoin
-- Mise à jour sans envoyer de fichier : catalogue de packs hébergé en privé.
-- Synchronisation téléphone ↔ ordinateur (compte).
-- Statistiques par chapitre (taux de réussite, chapitres à revoir).
+## À venir
+1. **UE3** (45 fiches) puis **UE4** (44 fiches), même méthode (plan, sous-agents, vérification, publication).
+2. **Annales** (quand ta sœur les envoie) :
+   - les déposer dans `annales/<UE>/` (photos, scans ou PDF) ;
+   - Claude les retranscrit fidèlement (`origine: "annale"`, `annee`), avec la grille officielle si elle
+     existe ;
+   - chaque question va dans la fiche de cours qui la justifie, et chaque item cite cette fiche mot pour mot ;
+     un item que le cours ne permet pas de trancher est signalé, jamais inventé ;
+   - dans l'examen blanc, ajouter le choix « Annales seules », et caler les réglages par défaut (durée,
+     barème) sur les vraies modalités lues dans les annales.
+3. **QCM à schéma** : schéma légendé par des numéros, affiché au-dessus des items.
+4. Plus tard, si besoin : statistiques détaillées, synchronisation entre plusieurs appareils.

@@ -16,9 +16,11 @@ function salutation() {
 interface Props {
   allerA: (onglet: 'entrainement' | 'erreurs' | 'cours') => void
   etat: EtatCours
+  onExamen: () => void
+  onRevisionDuJour: (ids: string[]) => void
 }
 
-export default function Accueil({ allerA, etat }: Props) {
+export default function Accueil({ allerA, etat, onExamen, onRevisionDuJour }: Props) {
   const stats = useStats()
   const compte = useLiveQuery(
     async () => ({
@@ -70,6 +72,21 @@ export default function Accueil({ allerA, etat }: Props) {
       </header>
 
       <nav className="menu">
+        {stats.duJour.length > 0 && (
+          <button className="tuile tuile-du-jour" onClick={() => onRevisionDuJour(stats.duJour)}>
+            <span className="tuile-icone" style={{ background: 'var(--orange)' }}>
+              <Icone nom="flamme" taille={26} />
+            </span>
+            <span className="tuile-texte">
+              <strong>Révision du jour</strong>
+              <small>
+                {stats.duJour.length} QCM à revoir maintenant, pour bien les retenir
+              </small>
+            </span>
+            <span className="tuile-badge orange">{stats.duJour.length}</span>
+          </button>
+        )}
+
         <button className="tuile tuile-grande" onClick={() => allerA('entrainement')}>
           <span className="tuile-icone" style={{ background: 'var(--accent)' }}>
             <Icone nom="eclair" taille={26} />
@@ -105,16 +122,16 @@ export default function Accueil({ allerA, etat }: Props) {
           <Icone nom="fleche" />
         </button>
 
-        <div className="tuile bientot" aria-disabled="true">
-          <span className="tuile-icone" style={{ background: 'var(--doux)' }}>
+        <button className="tuile" onClick={onExamen}>
+          <span className="tuile-icone" style={{ background: 'var(--texte)' }}>
             <Icone nom="trophee" taille={24} />
           </span>
           <span className="tuile-texte">
             <strong>Examen blanc</strong>
-            <small>Chronométré, comme le jour J</small>
+            <small>Chronométré, correction à la fin, comme le jour J</small>
           </span>
-          <span className="etiquette">Bientôt</span>
-        </div>
+          <Icone nom="fleche" />
+        </button>
       </nav>
     </div>
   )

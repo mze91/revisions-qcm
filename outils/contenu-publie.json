@@ -1,3 +1,14 @@
 {
-  "matieres": [{ "id": "ue1", "nom": "UE1" }]
+  "matieres": [
+    {
+      "id": "ue1",
+      "nom": "UE1",
+      "cours": "cours/UE1"
+    },
+    {
+      "id": "ue2",
+      "nom": "UE2",
+      "cours": "cours/UE2"
+    }
+  ]
 }

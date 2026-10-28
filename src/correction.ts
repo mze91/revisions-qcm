@@ -1,5 +1,5 @@
 import { db } from './db'
-import type { Question, Reponse } from './types'
+import type { Bareme, Question, Reponse } from './types'
 
 // Une discordance = un item coché alors qu'il est faux, ou non coché alors qu'il est vrai.
 export function compterDiscordances(question: Question, choix: string[]): number {
@@ -7,8 +7,9 @@ export function compterDiscordances(question: Question, choix: string[]): number
 }
 
 // Barème « médecine » par défaut : 0 discordance = 1 pt, 1 = 0,5, 2 = 0,2, 3 et plus = 0.
-// Sera réglable par matière avec le mode examen.
-export function points(discordances: number): number {
+// « Tout ou rien » : 1 point seulement sans aucune discordance (réglable dans l'examen blanc).
+export function points(discordances: number, bareme: Bareme = 'discordances'): number {
+  if (bareme === 'tout-ou-rien') return discordances === 0 ? 1 : 0
   return [1, 0.5, 0.2][discordances] ?? 0
 }
 

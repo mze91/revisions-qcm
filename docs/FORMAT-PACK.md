@@ -48,7 +48,8 @@ historique et leur place dans « Mes erreurs ».
 | `chapitres[].groupe` | non | partie de la matière (ex. « Pharmacologie » dans l'UE1) : l'appli regroupe les chapitres par partie |
 | `chapitres[].source` | non | nom du fichier de cours d'origine |
 | `questions[].type` | oui | `"multiple"` (une ou plusieurs bonnes réponses) ou `"unique"` (une seule) |
-| `questions[].origine` | non | `"genere"` (fait à partir du cours) ou `"annale"` (retranscrit d'une annale) |
+| `questions[].origine` | non | `"genere"` (fait à partir du cours) ou `"annale"` (repris tel quel : QCM d'entraînement du tutorat ou vraie annale) |
+| `questions[].annee` | non | pour une vraie annale d'examen : année ou session, affichée « Annale 2024 » |
 | `items[].lettre` | oui | A, B, C… dans l'ordre |
 | `items[].correct` | oui | `true` ou `false` |
 | `items[].explication` | oui | commence par « Vrai. » ou « Faux. », puis explique avec les mots du cours |
@@ -58,7 +59,11 @@ historique et leur place dans « Mes erreurs ».
 Le vérificateur `node outils/verifier-pack.mjs <fichier>` contrôle tout cela. Il vérifie aussi que chaque
 extrait se trouve vraiment dans le texte du cours.
 
+## Ajouté automatiquement à la publication (ne pas écrire à la main)
+
+- `chapitres[].pages`, `chapitres[].cours` : nombre de pages et paquet chiffré des pages du cours (lecteur).
+- `items[].source.zones` : rectangles du passage cité sur la page, pour le surligner.
+
 ## Prévu pour la suite
 
-- `questions[].schema` : image (schéma légendé par des numéros) affichée au-dessus des items (étape 4).
-- `matiere.modalites` : durée, nombre de questions, barème, points négatifs pour le mode examen (étape 2).
+- `questions[].schema` : image (schéma légendé par des numéros) affichée au-dessus des items.

@@ -152,3 +152,44 @@ async function supprimerMatiere(matiereId: string) {
     await db.matieres.delete(matiereId)
   })
 }
+
+// Pages d'une fiche (images), déchiffrées sur le téléphone. Le fichier chiffré est gardé en cache :
+// une fiche déjà ouverte se relit sans Internet.
+const CACHE_COURS = 'cours-v1'
+const pagesEnMemoire = new Map<string, string[]>()
+
+export async function chargerPages(cours: string): Promise<string[]> {
+  const deja = pagesEnMemoire.get(cours)
+  if (deja) return deja
+  const cle = await cleDepuisStockage()
+  if (!cle) throw new CodeIncorrect()
+  const url = `${BASE}${cours}`
+  let reponse: Response | undefined
+  try {
+    const cache = await caches.open(CACHE_COURS)
+    reponse = await cache.match(url)
+    if (!reponse) {
+      const r = await fetch(url)
+      if (!r.ok) throw new HorsLigne()
+      await cache.put(url, r.clone())
+      reponse = r
+    }
+  } catch (e) {
+    if (e instanceof HorsLigne) throw e
+    // Pas de cache disponible (navigation privée…) : téléchargement direct.
+    reponse = await fetch(url).catch(() => undefined)
+    if (!reponse?.ok) throw new HorsLigne()
+  }
+  const paquet = await dechiffrer(cle, new Uint8Array(await reponse.arrayBuffer()))
+  const vue = new DataView(paquet.buffer)
+  const n = vue.getUint32(0, true)
+  const urls: string[] = []
+  let pos = 4 + 4 * n
+  for (let i = 0; i < n; i++) {
+    const taille = vue.getUint32(4 + 4 * i, true)
+    urls.push(URL.createObjectURL(new Blob([paquet.slice(pos, pos + taille)], { type: 'image/jpeg' })))
+    pos += taille
+  }
+  pagesEnMemoire.set(cours, urls)
+  return urls
+}

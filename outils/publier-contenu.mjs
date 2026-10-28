@@ -3,7 +3,10 @@
 //  - lit les matières listées dans outils/contenu-publie.json ;
 //  - vérifie chaque fichier packs/<matiere>/*.qcm.json (refuse de publier un fichier non valide) ;
 //  - regroupe les chapitres d'une matière, compresse, chiffre (AES-256-GCM) → public/contenu/<matiere>.bin ;
+//  - rend les pages de chaque fiche en images (cache dans travail/_pages/), chiffrées dans
+//    public/contenu/pages/<matiere>/<fiche>.bin, et repère sur la page chaque extrait cité (surlignage) ;
 //  - écrit public/contenu/index.json (liste des fichiers, sel, témoin de code), sans aucun contenu lisible.
+// Le chiffrement est déterministe (même contenu → même fichier) pour ne pas regonfler le dépôt à chaque publication.
 // La clé vient du code d'accès (fichier .code-acces, jamais publié), dérivé avec PBKDF2-SHA256.
 // L'appli fait le même calcul quand ta sœur tape le code (src/contenu.ts).
 //
@@ -11,10 +14,11 @@
 //         node outils/publier-contenu.mjs --nouveau-code   (change le code : à redonner à ta sœur)
 
 import { execFileSync } from 'node:child_process'
-import { createCipheriv, createHash, pbkdf2Sync, randomBytes, randomInt } from 'node:crypto'
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { createCipheriv, createHash, createHmac, pbkdf2Sync, randomBytes, randomInt } from 'node:crypto'
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { dirname, join, relative } from 'node:path'
 import { gzipSync } from 'node:zlib'
+import { lireMots, zonesExtrait } from './zones.mjs'
 
 const ITERATIONS = 600000
 const FICHIER_CODE = '.code-acces'
@@ -46,7 +50,8 @@ export function normaliserCode(code) {
 }
 
 function chiffrer(cle, donnees) {
-  const iv = randomBytes(12)
+  // IV tiré du contenu : deux contenus différents n'ont jamais le même IV, un même contenu donne le même fichier.
+  const iv = createHmac('sha256', cle).update(donnees).digest().subarray(0, 12)
   const c = createCipheriv('aes-256-gcm', cle, iv)
   const corps = Buffer.concat([c.update(donnees), c.final()])
   // Ordre attendu par WebCrypto : iv | texte chiffré | étiquette d'authentification.
@@ -65,11 +70,45 @@ if (changer) {
 const sel = !changer && ancienIndex?.sel ? Buffer.from(ancienIndex.sel, 'base64') : randomBytes(16)
 const cle = pbkdf2Sync(normaliserCode(code), sel, ITERATIONS, 32, 'sha256')
 
-rmSync(SORTIE, { recursive: true, force: true })
+const RESOLUTION = 120
+const QUALITE = 70
 mkdirSync(SORTIE, { recursive: true })
+const produits = new Set()
+
+function ecrireSortie(chemin, donnees) {
+  mkdirSync(dirname(chemin), { recursive: true })
+  if (!existsSync(chemin) || !readFileSync(chemin).equals(donnees)) writeFileSync(chemin, donnees)
+  produits.add(chemin)
+}
+
+// Images des pages d'une fiche, mises en cache tant que le PDF ne change pas.
+function imagesPages(pdf, dossierCache) {
+  const empreinte = createHash('sha256').update(readFileSync(pdf)).digest('hex') + `-${RESOLUTION}-${QUALITE}`
+  const temoin = join(dossierCache, 'empreinte.txt')
+  if (!existsSync(temoin) || readFileSync(temoin, 'utf8') !== empreinte) {
+    rmSync(dossierCache, { recursive: true, force: true })
+    mkdirSync(dossierCache, { recursive: true })
+    execFileSync('pdftoppm', ['-r', String(RESOLUTION), '-jpeg', '-jpegopt', `quality=${QUALITE}`, pdf, join(dossierCache, 'p')], { stdio: 'ignore' })
+    writeFileSync(temoin, empreinte)
+  }
+  return readdirSync(dossierCache)
+    .filter((f) => f.endsWith('.jpg'))
+    .sort((a, b) => Number(a.match(/(\d+)\.jpg$/)[1]) - Number(b.match(/(\d+)\.jpg$/)[1]))
+    .map((f) => readFileSync(join(dossierCache, f)))
+}
+
+// Paquet de pages : nombre de pages, taille de chaque image, puis les images à la suite.
+function paquetPages(images) {
+  const tete = Buffer.alloc(4 + 4 * images.length)
+  tete.writeUInt32LE(images.length, 0)
+  images.forEach((im, i) => tete.writeUInt32LE(im.length, 4 + 4 * i))
+  return Buffer.concat([tete, ...images])
+}
 
 const fichiers = []
 let total = 0
+let surlignes = 0
+let items = 0
 for (const m of config.matieres) {
   const dossier = join('packs', m.id)
   const packs = readdirSync(dossier).filter((f) => f.endsWith('.qcm.json')).sort()
@@ -83,17 +122,50 @@ for (const m of config.matieres) {
       process.exit(1)
     }
     const pack = JSON.parse(readFileSync(chemin, 'utf8'))
-    chapitres.push(...pack.chapitres)
+    for (const c of pack.chapitres) {
+      const pdf = m.cours && c.source ? join(m.cours, c.source) : null
+      if (pdf && existsSync(pdf)) {
+        const images = imagesPages(pdf, join('travail', '_pages', m.id, c.id))
+        const sortie = join(SORTIE, 'pages', m.id, `${c.id}.bin`)
+        const bin = chiffrer(cle, paquetPages(images))
+        ecrireSortie(sortie, bin)
+        c.pages = images.length
+        // La version dans l'adresse fait retélécharger la fiche quand elle change (sinon, cache du téléphone).
+        c.cours = `${relative(SORTIE, sortie)}?v=${createHash('sha256').update(bin).digest('hex').slice(0, 10)}`
+        const mots = lireMots(pdf)
+        for (const q of c.questions)
+          for (const it of q.items) {
+            items++
+            const z = zonesExtrait(mots, it.source.extrait, it.source.page)
+            if (z) {
+              it.source.page = z.page
+              it.source.zones = z.zones
+              surlignes++
+            }
+          }
+      }
+      chapitres.push(c)
+    }
   }
   const nbQuestions = chapitres.reduce((s, c) => s + c.questions.length, 0)
   total += nbQuestions
   const json = JSON.stringify({ format: 'qcm-revision', version: 1, matiere: { id: m.id, nom: m.nom }, chapitres })
-  const bin = chiffrer(cle, gzipSync(Buffer.from(json)))
   const nom = `${m.id}.bin`
-  writeFileSync(join(SORTIE, nom), bin)
+  ecrireSortie(join(SORTIE, nom), chiffrer(cle, gzipSync(Buffer.from(json), { mtime: 0 })))
   fichiers.push({ nom, matiere: m.id, empreinte: createHash('sha256').update(json).digest('hex').slice(0, 16) })
-  console.log(`✓ ${m.nom} : ${chapitres.length} fiches, ${nbQuestions} QCM → ${nom} (${Math.round(bin.length / 1024)} Ko)`)
+  const nbPages = chapitres.reduce((s, c) => s + (c.pages ?? 0), 0)
+  console.log(`✓ ${m.nom} : ${chapitres.length} fiches, ${nbQuestions} QCM, ${nbPages} pages de cours`)
 }
+
+// Retire les anciens fichiers qui ne sont plus publiés.
+function nettoyer(d) {
+  for (const f of readdirSync(d)) {
+    const c = join(d, f)
+    if (statSync(c).isDirectory()) nettoyer(c)
+    else if (f !== 'index.json' && !produits.has(c)) rmSync(c)
+  }
+}
+nettoyer(SORTIE)
 
 const index = {
   version: 1,
@@ -104,5 +176,5 @@ const index = {
   fichiers,
 }
 writeFileSync(join(SORTIE, 'index.json'), JSON.stringify(index, null, 1) + '\n')
-console.log(`\n${total} QCM prêts dans ${SORTIE}/.`)
+console.log(`\n${total} QCM prêts dans ${SORTIE}/. Passages surlignables : ${surlignes}/${items} items.`)
 if (changer) console.log(`\n🔑 Nouveau code d'accès à donner à ta sœur : ${code}`)

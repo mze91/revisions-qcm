@@ -22,6 +22,8 @@ export async function enregistrerPack(pack: Pack) {
         groupe: c.groupe,
         ordre: c.ordre ?? index + 1,
         source: c.source,
+        pages: c.pages,
+        cours: c.cours,
         importeLe: Date.now(),
       })
       const nouvelles: Question[] = c.questions.map((q) => ({

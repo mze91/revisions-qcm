@@ -14,13 +14,20 @@ de ses cours**. Issa parle français et n'est pas développeur : réponds en fra
 - **Côté téléphone** : AUCUN import (décision d'Issa). Au premier lancement, elle tape le code d'accès ; ensuite
   `src/contenu.ts` télécharge et met à jour les cours à chaque ouverture. Le contenu publié fait foi : ce qui
   n'y est plus est retiré. Données et progression dans IndexedDB (Dexie).
+- **Règle absolue d'Issa** : 100 % du contenu vient des fiches et des annales de sa sœur. Pas d'Internet, pas
+  d'invention, pas de recherche pour écrire ou corriger une question.
+- La publication rend aussi les pages des fiches en images (cache `travail/_pages/`), chiffrées dans
+  `public/contenu/pages/`, et repère chaque extrait sur sa page (`outils/zones.mjs`) pour le surligner.
+  Chiffrement déterministe : republier sans changement ne modifie aucun fichier.
 - `cours/`, `travail/`, `packs/` et `.code-acces` sont privés (ignorés par git) : ne jamais les publier.
 
 ## Code
 - Vite + React + TypeScript, `vite-plugin-pwa`, Dexie (`src/db.ts`). Pas de routeur : onglets dans `src/App.tsx`.
-- Écrans : `src/screens/` (Code = code d'accès, Accueil = menu + stats, Reviser = « S'entraîner » avec
-  parties repliables, Session, Erreurs, Cours = parcours UE > partie > fiche, toucher une fiche la révise,
-  ChoixChapitres, Attente). Composants visuels (icônes SVG, anneau, pastille) dans `src/ui.tsx` ; statistiques (série,
+- Écrans : `src/screens/` (Code = code d'accès, Accueil = menu + stats + révision du jour, Reviser =
+  « S'entraîner », Session, Question = affichage partagé d'une question et de sa correction, Erreurs, Cours =
+  parcours UE > partie > fiche, Fiche = lire / réviser / erreurs, Examen = préparation + copie + résultat,
+  ChoixChapitres, Attente). Navigation : pile d'écrans dans `src/App.tsx`. Lecteur de cours : `src/lecteur.tsx`
+  (ouvrable de partout avec `useOuvrirCours`). Examen blanc : `src/examen.ts`. Composants visuels (icônes SVG, anneau, pastille) dans `src/ui.tsx` ; statistiques (série,
   réussite, maîtrise par chapitre) et couleur par matière dans `src/stats.ts`.
 - Design : police arrondie système, boutons « en relief », retour vert/rouge en bas d'écran, mode sombre.
   Couleurs dans les variables CSS en haut de `src/styles.css`.

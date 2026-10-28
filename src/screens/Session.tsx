@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { db } from '../db'
 import { compterDiscordances, enregistrerReponse, points } from '../correction'
-import { couleurMatiere } from '../stats'
 import { Anneau, Icone } from '../ui'
 import type { Chapitre, Question, Reponse } from '../types'
+import QuestionVue from './Question'
 
 export interface ParametresSession {
   questionIds: string[]
@@ -74,8 +74,6 @@ export default function Session({ parametres, onQuitter }: Props) {
   const chapitre = chapitres.get(question.chapitreId)
   const discordances = corrige ? compterDiscordances(question, choix) : 0
   const ton = discordances === 0 ? 'bon' : 'faux'
-  // Certains QCM du tutorat demandent de cocher les propositions fausses : « Vrai » serait alors trompeur.
-  const cocherFausses = /fausse/i.test(question.enonce) && !/exacte/i.test(question.enonce)
 
   const cocher = (lettre: string) => {
     if (corrige) return
@@ -121,60 +119,14 @@ export default function Session({ parametres, onQuitter }: Props) {
       </header>
 
       <main className="contenu" key={index}>
-        {chapitre && (
-          <p className="chapitre-question" style={{ color: couleurMatiere(chapitre.matiereId) }}>
-            {parametres.mode === 'erreurs' && <span className="etiquette rouge">Mes erreurs</span>}
-            {chapitre.nom}
-          </p>
-        )}
-        {question.origine === 'annale' && <span className="etiquette tutorat">QCM du tutorat</span>}
-        <h2 className="enonce">{question.enonce}</h2>
-        <p className="consigne">
-          {cocherFausses
-            ? 'Coche les propositions FAUSSES'
-            : question.type === 'unique'
-              ? 'Une seule bonne réponse'
-              : 'Une ou plusieurs bonnes réponses'}
-        </p>
-
-        <div className="items">
-          {question.items.map((it, i) => {
-            const coche = choix.includes(it.lettre)
-            const juste = coche === it.correct
-            const classe = corrige ? (juste ? 'bon' : 'faux') : coche ? 'coche' : ''
-            return (
-              <div key={it.lettre} className={`item ${classe}`} style={{ animationDelay: `${i * 40}ms` }}>
-                <button className="item-bouton" onClick={() => cocher(it.lettre)} disabled={corrige}>
-                  <span className="lettre">
-                    {corrige ? <Icone nom={juste ? 'coche' : 'croix'} taille={16} epaisseur={3} /> : it.lettre}
-                  </span>
-                  <span className="item-texte">{it.texte}</span>
-                  {corrige && (
-                    <span className={`verdict ${it.correct ? 'vrai' : ''}`}>
-                      {cocherFausses ? (it.correct ? 'À cocher' : 'À laisser') : it.correct ? 'Vrai' : 'Faux'}
-                    </span>
-                  )}
-                </button>
-                {corrige && (
-                  <div className="correction">
-                    <p className="ton-choix">
-                      {it.lettre} · {coche ? 'Tu as coché' : "Tu n'as pas coché"} — {juste ? 'bien vu' : 'erreur'}
-                    </p>
-                    <p>{it.explication}</p>
-                    {it.source?.extrait && (
-                      <blockquote>
-                        <span className="source">
-                          <Icone nom="livre" taille={14} /> Cours{it.source.page ? `, p. ${it.source.page}` : ''}
-                        </span>
-                        « {it.source.extrait} »
-                      </blockquote>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+        <QuestionVue
+          question={question}
+          chapitre={chapitre}
+          choix={choix}
+          corrige={corrige}
+          onCocher={cocher}
+          etiquette={parametres.mode === 'erreurs' && <span className="etiquette rouge">Mes erreurs</span>}
+        />
       </main>
 
       <div className={`feuille ${corrige ? `visible ${ton}` : ''}`}>

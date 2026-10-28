@@ -1,16 +1,13 @@
 import { useState, type CSSProperties } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
-import { preparerSerie } from '../correction'
 import { couleurMatiere, useStats } from '../stats'
 import { Anneau, Icone, Pastille } from '../ui'
 import type { EtatCours } from '../App'
-import type { Chapitre } from '../types'
-import type { ParametresSession } from './Session'
 import Attente from './Attente'
 
 // Toutes les fiches, rangées par matière puis par partie. Toucher une fiche lance sa révision.
-export default function Cours({ onLancer, etat }: { onLancer: (p: ParametresSession) => void; etat: EtatCours }) {
+export default function Cours({ onOuvrirFiche, etat }: { onOuvrirFiche: (chapitreId: string) => void; etat: EtatCours }) {
   const matieres = useLiveQuery(() => db.matieres.orderBy('nom').toArray(), [])
   const chapitres = useLiveQuery(() => db.chapitres.toArray(), [])
   const compte = useLiveQuery(async () => {
@@ -38,9 +35,6 @@ export default function Cours({ onLancer, etat }: { onLancer: (p: ParametresSess
     setOuverts(s)
   }
 
-  const reviserFiche = async (c: Chapitre) =>
-    onLancer({ questionIds: await preparerSerie([c.id]), mode: 'entrainement' })
-
   // Maîtrise moyenne de plusieurs fiches, pondérée par leur nombre de QCM.
   const maitrise = (ids: string[]) => {
     const total = ids.reduce((s, id) => s + (compte.get(id) ?? 0), 0)
@@ -51,7 +45,7 @@ export default function Cours({ onLancer, etat }: { onLancer: (p: ParametresSess
   return (
     <div>
       <h1 className="titre">Mes cours</h1>
-      <p className="aide">Touche une fiche pour réviser tous ses QCM.</p>
+      <p className="aide">Touche une fiche pour la lire, réviser ses QCM ou reprendre tes erreurs.</p>
 
       {matieres.map((m) => {
         const couleur = couleurMatiere(m.id)
@@ -98,7 +92,7 @@ export default function Cours({ onLancer, etat }: { onLancer: (p: ParametresSess
                     fiches.map((c) => {
                       const m100 = Math.round((stats?.maitrise.get(c.id) ?? 0) * 100)
                       return (
-                        <button key={c.id} className="fiche" onClick={() => reviserFiche(c)}>
+                        <button key={c.id} className="fiche" onClick={() => onOuvrirFiche(c.id)}>
                           <span className="chapitre-texte">
                             <span className="chapitre-nom">{c.nom}</span>
                             <span className="chapitre-info">
@@ -109,7 +103,7 @@ export default function Cours({ onLancer, etat }: { onLancer: (p: ParametresSess
                             </span>
                           </span>
                           <span className="fiche-go">
-                            <Icone nom="eclair" taille={18} />
+                            <Icone nom="fleche" taille={18} />
                           </span>
                         </button>
                       )
