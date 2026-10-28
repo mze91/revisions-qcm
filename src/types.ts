@@ -26,6 +26,7 @@ export interface ChapitrePack {
   id: string
   nom: string
   ordre?: number
+  groupe?: string // partie de la matière, ex. « Pharmacologie »
   source?: string
   questions: QuestionPack[]
 }
@@ -48,6 +49,7 @@ export interface Chapitre {
   id: string // `${matiereId}/${idDuPack}`
   matiereId: string
   nom: string
+  groupe?: string
   ordre: number
   source?: string
   importeLe: number

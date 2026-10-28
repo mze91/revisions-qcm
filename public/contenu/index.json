@@ -1,0 +1,14 @@
+{
+ "version": 1,
+ "date": "2026-10-28T17:34:45.777Z",
+ "iterations": 600000,
+ "sel": "hsugzkWOLMlrlGb6zuSr7A==",
+ "temoin": "rcnaoNLHFAqnK/oh3jZ2es0316kIr6J6dF/NE/sdf4i5Yl/bcyZjvA==",
+ "fichiers": [
+  {
+   "nom": "ue1.bin",
+   "matiere": "ue1",
+   "empreinte": "aae456eb76e2f279"
+  }
+ ]
+}

@@ -114,9 +114,14 @@ export function Anneau({
 }
 
 export function Pastille({ nom, couleur, taille = 40 }: { nom: string; couleur: string; taille?: number }) {
+  // Un nom court (ex. « UE1 ») s'affiche en entier, sinon sa première lettre.
+  const texte = nom.trim().length <= 4 ? nom.trim() : nom.trim().charAt(0).toUpperCase()
   return (
-    <span className="pastille-matiere" style={{ background: couleur, width: taille, height: taille, fontSize: taille * 0.42 }}>
-      {nom.trim().charAt(0).toUpperCase()}
+    <span
+      className="pastille-matiere"
+      style={{ background: couleur, width: taille, height: taille, fontSize: taille * (texte.length > 1 ? 0.3 : 0.42) }}
+    >
+      {texte}
     </span>
   )
 }

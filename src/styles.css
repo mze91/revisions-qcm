@@ -1242,3 +1242,205 @@ blockquote {
     transition: none !important;
   }
 }
+
+/* ——— Écran du code d'accès ——— */
+.ecran-code {
+  display: grid;
+  gap: 14px;
+  text-align: center;
+  padding: calc(env(safe-area-inset-top) + 56px) 20px 40px;
+}
+
+.ecran-code h1 {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.ecran-code p {
+  color: var(--doux);
+  margin: 0 0 6px;
+}
+
+.ecran-code .message {
+  justify-content: center;
+  margin: 0;
+}
+
+.champ {
+  width: 100%;
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 16px;
+  border-radius: 16px;
+  border: 2px solid var(--bord);
+  background: var(--carte);
+  color: var(--texte);
+  outline: none;
+}
+
+.champ:focus {
+  border-color: var(--accent);
+}
+
+.champ-erreur {
+  border-color: var(--faux);
+  animation: secouer 0.4s ease-out;
+}
+
+.chargeur {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 4px solid var(--piste);
+  border-top-color: var(--accent);
+  animation: tourner 0.9s linear infinite;
+}
+
+@keyframes tourner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ——— Mes cours : matière > parties > fiches ——— */
+.matiere-entete {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.matiere-entete h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.matiere-entete small {
+  color: var(--doux);
+}
+
+.anneau-texte {
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.partie {
+  padding: 6px;
+  margin: 10px 0;
+}
+
+.partie-tete {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 12px 10px;
+  border-radius: 14px;
+}
+
+.partie-tete:active {
+  background: var(--piste);
+}
+
+.partie-texte {
+  flex: 1;
+  min-width: 0;
+}
+
+.partie-texte strong {
+  display: block;
+  font-size: 1.02rem;
+}
+
+.partie-texte small,
+.sous-partie-titre small {
+  display: block;
+  color: var(--doux);
+  font-size: 0.82rem;
+}
+
+.chevron {
+  display: grid;
+  place-items: center;
+  color: var(--doux);
+  transition: transform 0.2s;
+}
+
+.chevron.ouvert {
+  transform: rotate(90deg);
+}
+
+.fiche {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 12px 10px;
+  border-top: 1px solid var(--bord);
+  color: var(--texte);
+}
+
+.fiche:active {
+  background: var(--piste);
+}
+
+.fiche-go {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--couleur, var(--accent)) 14%, transparent);
+  color: var(--couleur, var(--accent));
+  flex: none;
+}
+
+/* Parties repliables dans « S'entraîner » */
+.sous-partie {
+  border-top: 1px solid var(--bord);
+  margin: 0 4px;
+}
+
+.sous-partie-tete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 0;
+}
+
+.sous-partie-titre {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 10px 6px;
+  color: var(--texte);
+}
+
+.sous-partie-titre strong {
+  display: block;
+  font-size: 0.98rem;
+}
+
+.puce.petite {
+  padding: 5px 11px;
+  font-size: 0.78rem;
+}
+
+.etiquette.tutorat {
+  display: inline-block;
+  margin-bottom: 8px;
+  background: var(--accent-doux);
+  color: var(--accent);
+}

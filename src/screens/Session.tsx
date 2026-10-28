@@ -74,6 +74,8 @@ export default function Session({ parametres, onQuitter }: Props) {
   const chapitre = chapitres.get(question.chapitreId)
   const discordances = corrige ? compterDiscordances(question, choix) : 0
   const ton = discordances === 0 ? 'bon' : 'faux'
+  // Certains QCM du tutorat demandent de cocher les propositions fausses : « Vrai » serait alors trompeur.
+  const cocherFausses = /fausse/i.test(question.enonce) && !/exacte/i.test(question.enonce)
 
   const cocher = (lettre: string) => {
     if (corrige) return
@@ -125,9 +127,14 @@ export default function Session({ parametres, onQuitter }: Props) {
             {chapitre.nom}
           </p>
         )}
+        {question.origine === 'annale' && <span className="etiquette tutorat">QCM du tutorat</span>}
         <h2 className="enonce">{question.enonce}</h2>
         <p className="consigne">
-          {question.type === 'unique' ? 'Une seule bonne réponse' : 'Une ou plusieurs bonnes réponses'}
+          {cocherFausses
+            ? 'Coche les propositions FAUSSES'
+            : question.type === 'unique'
+              ? 'Une seule bonne réponse'
+              : 'Une ou plusieurs bonnes réponses'}
         </p>
 
         <div className="items">
@@ -142,7 +149,11 @@ export default function Session({ parametres, onQuitter }: Props) {
                     {corrige ? <Icone nom={juste ? 'coche' : 'croix'} taille={16} epaisseur={3} /> : it.lettre}
                   </span>
                   <span className="item-texte">{it.texte}</span>
-                  {corrige && <span className={`verdict ${it.correct ? 'vrai' : ''}`}>{it.correct ? 'Vrai' : 'Faux'}</span>}
+                  {corrige && (
+                    <span className={`verdict ${it.correct ? 'vrai' : ''}`}>
+                      {cocherFausses ? (it.correct ? 'À cocher' : 'À laisser') : it.correct ? 'Vrai' : 'Faux'}
+                    </span>
+                  )}
                 </button>
                 {corrige && (
                   <div className="correction">

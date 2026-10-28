@@ -1,16 +1,16 @@
-import { useRef, useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
-import { creerSauvegarde, importerPack, supprimerChapitre } from '../importation'
-import { couleurMatiere } from '../stats'
-import { Icone, Pastille } from '../ui'
+import { preparerSerie } from '../correction'
+import { couleurMatiere, useStats } from '../stats'
+import { Anneau, Icone, Pastille } from '../ui'
+import type { EtatCours } from '../App'
+import type { Chapitre } from '../types'
+import type { ParametresSession } from './Session'
+import Attente from './Attente'
 
-interface Message {
-  type: 'bon' | 'faux'
-  texte: string
-}
-
-export default function Cours() {
+// Toutes les fiches, rangées par matière puis par partie. Toucher une fiche lance sa révision.
+export default function Cours({ onLancer, etat }: { onLancer: (p: ParametresSession) => void; etat: EtatCours }) {
   const matieres = useLiveQuery(() => db.matieres.orderBy('nom').toArray(), [])
   const chapitres = useLiveQuery(() => db.chapitres.toArray(), [])
   const compte = useLiveQuery(async () => {
@@ -18,123 +18,108 @@ export default function Cours() {
     await db.questions.each((q) => m.set(q.chapitreId, (m.get(q.chapitreId) ?? 0) + 1))
     return m
   }, [])
-  const fichier = useRef<HTMLInputElement>(null)
-  const [messages, setMessages] = useState<Message[]>([])
-
-  const importer = async (fichiers: FileList | null) => {
-    if (!fichiers) return
-    const nouveaux: Message[] = []
-    for (const f of Array.from(fichiers)) {
-      try {
-        const texte = await f.text()
-        if (
-          texte.includes('"sauvegarde-qcm-revision"') &&
-          !confirm('Restaurer cette sauvegarde ? Tout ce qui est sur le téléphone sera remplacé par son contenu.')
-        )
-          continue
-        const r = await importerPack(texte)
-        const detail = r.chapitres.map((c) => `${c.nom} (${c.questions} QCM)`).join(', ')
-        nouveaux.push({ type: 'bon', texte: `${r.matiere}${detail ? ' : ' + detail : ''}` })
-      } catch (e) {
-        nouveaux.push({ type: 'faux', texte: `${f.name} : ${(e as Error).message}` })
-      }
-    }
-    setMessages(nouveaux)
-    if (fichier.current) fichier.current.value = ''
-  }
-
-  const sauvegarder = async () => {
-    const blob = await creerSauvegarde()
-    const nom = `sauvegarde-qcm-${new Date().toISOString().slice(0, 10)}.json`
-    const file = new File([blob], nom, { type: 'application/json' })
-    // Sur téléphone : menu de partage (Enregistrer dans Fichiers, AirDrop…). Sinon : téléchargement.
-    if (navigator.canShare?.({ files: [file] })) {
-      try {
-        await navigator.share({ files: [file], title: nom })
-        return
-      } catch (e) {
-        if ((e as Error).name === 'AbortError') return
-      }
-    }
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = nom
-    a.click()
-    URL.revokeObjectURL(url)
-  }
+  const stats = useStats()
+  const [ouverts, setOuverts] = useState<Set<string>>(new Set())
 
   if (!matieres || !chapitres || !compte) return null
+
+  if (matieres.length === 0)
+    return (
+      <div>
+        <h1 className="titre">Mes cours</h1>
+        <Attente etat={etat} />
+      </div>
+    )
+
+  const basculer = (cle: string) => {
+    const s = new Set(ouverts)
+    if (s.has(cle)) s.delete(cle)
+    else s.add(cle)
+    setOuverts(s)
+  }
+
+  const reviserFiche = async (c: Chapitre) =>
+    onLancer({ questionIds: await preparerSerie([c.id]), mode: 'entrainement' })
+
+  // Maîtrise moyenne de plusieurs fiches, pondérée par leur nombre de QCM.
+  const maitrise = (ids: string[]) => {
+    const total = ids.reduce((s, id) => s + (compte.get(id) ?? 0), 0)
+    if (!total) return 0
+    return ids.reduce((s, id) => s + (stats?.maitrise.get(id) ?? 0) * (compte.get(id) ?? 0), 0) / total
+  }
 
   return (
     <div>
       <h1 className="titre">Mes cours</h1>
-
-      <section className="carte import">
-        <span className="import-icone">
-          <Icone nom="importer" taille={28} />
-        </span>
-        <h3>Ajouter des QCM</h3>
-        <p className="aide">Choisis le fichier de QCM reçu (il se termine par .json). Un chapitre déjà présent est mis à jour.</p>
-        <input ref={fichier} type="file" multiple hidden onChange={(e) => importer(e.target.files)} />
-        <button className="bouton principal" onClick={() => fichier.current?.click()}>
-          <Icone nom="plus" /> Importer un fichier
-        </button>
-        {messages.map((m, i) => (
-          <p key={i} className={`message ${m.type}`}>
-            <Icone nom={m.type === 'bon' ? 'coche' : 'croix'} taille={16} epaisseur={3} />
-            {m.texte}
-          </p>
-        ))}
-      </section>
+      <p className="aide">Touche une fiche pour réviser tous ses QCM.</p>
 
       {matieres.map((m) => {
         const couleur = couleurMatiere(m.id)
         const chs = chapitres.filter((c) => c.matiereId === m.id).sort((a, b) => a.ordre - b.ordre)
+        const groupes = [...new Set(chs.map((c) => c.groupe ?? ''))]
+        const nbQcm = chs.reduce((s, c) => s + (compte.get(c.id) ?? 0), 0)
+        const globale = maitrise(chs.map((c) => c.id))
         return (
-          <section key={m.id} className="carte matiere">
-            <div className="matiere-tete">
-              <Pastille nom={m.nom} couleur={couleur} />
+          <section key={m.id} style={{ '--couleur': couleur } as CSSProperties}>
+            <div className="carte matiere-entete">
+              <Pastille nom={m.nom} couleur={couleur} taille={48} />
               <div className="matiere-nom">
-                <h3>{m.nom}</h3>
+                <h2>{m.nom}</h2>
                 <small>
-                  {chs.length} chapitre{chs.length > 1 ? 's' : ''}
+                  {chs.length} fiches · {nbQcm} QCM
                 </small>
               </div>
+              <Anneau valeur={globale} taille={50} epaisseur={5} couleur={couleur}>
+                <small className="anneau-texte">{Math.round(globale * 100)}%</small>
+              </Anneau>
             </div>
-            {chs.map((c) => (
-              <div key={c.id} className="chapitre fixe">
-                <span className="chapitre-texte">
-                  <span className="chapitre-nom">{c.nom}</span>
-                  <span className="chapitre-info">
-                    {compte.get(c.id) ?? 0} QCM · importé le {new Date(c.importeLe).toLocaleDateString('fr-FR')}
-                  </span>
-                </span>
-                <button
-                  className="icone-bouton danger"
-                  aria-label={`Supprimer ${c.nom}`}
-                  onClick={() => {
-                    if (confirm(`Supprimer « ${c.nom} » et ses QCM du téléphone ?`)) supprimerChapitre(c.id)
-                  }}
-                >
-                  <Icone nom="poubelle" taille={20} />
-                </button>
-              </div>
-            ))}
+
+            {groupes.map((g) => {
+              const fiches = chs.filter((c) => (c.groupe ?? '') === g)
+              const cle = `${m.id}|${g}`
+              const ouvert = ouverts.has(cle) || groupes.length === 1
+              const part = Math.round(maitrise(fiches.map((c) => c.id)) * 100)
+              return (
+                <div key={cle} className="carte partie">
+                  {groupes.length > 1 && (
+                    <button className="partie-tete" onClick={() => basculer(cle)} aria-expanded={ouvert}>
+                      <span className="partie-texte">
+                        <strong>{g || 'Autres fiches'}</strong>
+                        <small>
+                          {fiches.length} fiches · maîtrisé à {part} %
+                        </small>
+                      </span>
+                      <span className={`chevron ${ouvert ? 'ouvert' : ''}`}>
+                        <Icone nom="fleche" taille={20} />
+                      </span>
+                    </button>
+                  )}
+                  {ouvert &&
+                    fiches.map((c) => {
+                      const m100 = Math.round((stats?.maitrise.get(c.id) ?? 0) * 100)
+                      return (
+                        <button key={c.id} className="fiche" onClick={() => reviserFiche(c)}>
+                          <span className="chapitre-texte">
+                            <span className="chapitre-nom">{c.nom}</span>
+                            <span className="chapitre-info">
+                              {compte.get(c.id) ?? 0} QCM · maîtrisé à {m100} %
+                            </span>
+                            <span className="jauge">
+                              <span style={{ width: `${m100}%` }} />
+                            </span>
+                          </span>
+                          <span className="fiche-go">
+                            <Icone nom="eclair" taille={18} />
+                          </span>
+                        </button>
+                      )
+                    })}
+                </div>
+              )
+            })}
           </section>
         )
       })}
-
-      <section className="carte">
-        <h3>Sauvegarde</h3>
-        <p className="aide">
-          Tout est enregistré sur ce téléphone. Fais une sauvegarde de temps en temps (QCM, erreurs, historique).
-          Pour la restaurer, importe le fichier de sauvegarde avec « Importer un fichier ».
-        </p>
-        <button className="bouton secondaire" onClick={sauvegarder}>
-          <Icone nom="sauver" /> Créer une sauvegarde
-        </button>
-      </section>
     </div>
   )
 }

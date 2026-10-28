@@ -2,8 +2,8 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
 import { useStats } from '../stats'
 import { Anneau, Icone } from '../ui'
-import { importerPack } from '../importation'
-import exemple from '../../exemples/packs/physiologie/cycle-cardiaque.qcm.json?raw'
+import type { EtatCours } from '../App'
+import Attente from './Attente'
 
 const OBJECTIF_JOUR = 20 // QCM par jour pour remplir l'anneau
 
@@ -15,9 +15,10 @@ function salutation() {
 
 interface Props {
   allerA: (onglet: 'entrainement' | 'erreurs' | 'cours') => void
+  etat: EtatCours
 }
 
-export default function Accueil({ allerA }: Props) {
+export default function Accueil({ allerA, etat }: Props) {
   const stats = useStats()
   const compte = useLiveQuery(
     async () => ({
@@ -29,23 +30,7 @@ export default function Accueil({ allerA }: Props) {
   )
   if (!stats || !compte) return null
 
-  if (compte.questions === 0) {
-    return (
-      <div className="bienvenue">
-        <div className="bienvenue-logo">
-          <Icone nom="livre" taille={44} />
-        </div>
-        <h1>Bienvenue&nbsp;!</h1>
-        <p>Entraîne-toi avec des QCM faits à partir de tes propres cours, et retravaille tes erreurs jusqu'à les maîtriser.</p>
-        <button className="bouton principal" onClick={() => allerA('cours')}>
-          <Icone nom="importer" /> Importer mes QCM
-        </button>
-        <button className="bouton secondaire" onClick={() => importerPack(exemple)}>
-          Essayer avec un cours d'exemple
-        </button>
-      </div>
-    )
-  }
+  if (compte.questions === 0) return <Attente etat={etat} />
 
   return (
     <div>
@@ -91,7 +76,7 @@ export default function Accueil({ allerA }: Props) {
           </span>
           <span className="tuile-texte">
             <strong>S'entraîner</strong>
-            <small>Choisis tes chapitres, correction immédiate</small>
+            <small>Choisis tes fiches, correction immédiate</small>
           </span>
           <Icone nom="fleche" />
         </button>
@@ -114,7 +99,7 @@ export default function Accueil({ allerA }: Props) {
           <span className="tuile-texte">
             <strong>Mes cours</strong>
             <small>
-              {compte.chapitres} chapitre{compte.chapitres > 1 ? 's' : ''} · {compte.questions} QCM
+              {compte.chapitres} fiche{compte.chapitres > 1 ? 's' : ''} · {compte.questions} QCM
             </small>
           </span>
           <Icone nom="fleche" />

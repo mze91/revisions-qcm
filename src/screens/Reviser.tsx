@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
-import { melanger } from '../correction'
+import { preparerSerie } from '../correction'
 import { useStats } from '../stats'
 import { Icone } from '../ui'
 import ChoixChapitres from './ChoixChapitres'
+import Attente from './Attente'
+import type { EtatCours } from '../App'
 import type { ParametresSession } from './Session'
 
 const CLE_SELECTION = 'reviser.chapitres'
@@ -20,10 +22,10 @@ function lireSelection(): Set<string> {
 
 interface Props {
   onLancer: (p: ParametresSession) => void
-  allerAuxCours: () => void
+  etat: EtatCours
 }
 
-export default function Reviser({ onLancer, allerAuxCours }: Props) {
+export default function Reviser({ onLancer, etat }: Props) {
   const matieres = useLiveQuery(() => db.matieres.orderBy('nom').toArray(), [])
   const chapitres = useLiveQuery(() => db.chapitres.toArray(), [])
   const compte = useLiveQuery(async () => {
@@ -50,12 +52,7 @@ export default function Reviser({ onLancer, allerAuxCours }: Props) {
     return (
       <div>
         <h1 className="titre">S'entraîner</h1>
-        <div className="vide">
-          <p>Aucun QCM pour l'instant.</p>
-          <button className="bouton principal" onClick={allerAuxCours}>
-            <Icone nom="importer" /> Importer mes QCM
-          </button>
-        </div>
+        <Attente etat={etat} />
       </div>
     )
   }
@@ -65,20 +62,14 @@ export default function Reviser({ onLancer, allerAuxCours }: Props) {
   const nombre = taille ? Math.min(taille, disponibles) : disponibles
 
   const lancer = async () => {
-    const questions = await db.questions.where('chapitreId').anyOf(selection).primaryKeys()
-    let ordre = melanger(questions)
-    if (nouvellesDabord) {
-      const dejaFaites = new Set(await db.reponses.where('questionId').anyOf(questions).keys())
-      ordre = [...ordre.filter((id) => !dejaFaites.has(id)), ...ordre.filter((id) => dejaFaites.has(id))]
-    }
-    onLancer({ questionIds: taille ? ordre.slice(0, taille) : ordre, mode: 'entrainement' })
+    onLancer({ questionIds: await preparerSerie(selection, nouvellesDabord, taille), mode: 'entrainement' })
   }
 
   return (
     <div className="avec-action">
       <h1 className="titre">S'entraîner</h1>
       <p className="sous-titre">
-        <span className="etape">1</span> Coche les chapitres à travailler
+        <span className="etape">1</span> Coche les fiches à travailler
       </p>
       <ChoixChapitres
         matieres={matieres}

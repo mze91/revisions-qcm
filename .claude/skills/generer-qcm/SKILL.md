@@ -84,10 +84,21 @@ Corrige ou supprime les items douteux.
 
 ## 5. Livrer
 
-Donne à Issa :
-- le chemin du fichier ;
-- le nombre de QCM ;
-- les éventuels passages du cours illisibles ou ambigus.
+Une fois les fichiers valides, publie-les pour qu'ils arrivent sur le téléphone de la sœur d'Issa :
+1. Ajoute la matière dans `outils/contenu-publie.json` si elle n'y est pas (ex. `{ "id": "ue2", "nom": "UE2" }`).
+2. Lance `node outils/publier-contenu.mjs` : il revérifie tous les packs, les chiffre dans `public/contenu/`,
+   et refuse de publier un fichier non valide.
+3. `npm run build`, puis commit et push de `public/contenu/` (et du code s'il a changé). GitHub Pages met
+   l'appli à jour en quelques minutes, et le téléphone télécharge les nouveaux cours à la prochaine ouverture.
 
-Rappelle-lui comment l'envoyer : AirDrop (ou WhatsApp, mail) vers le téléphone de sa sœur, « Enregistrer dans
-Fichiers », puis dans l'appli : **Mes cours → Importer un fichier**.
+Ne publie jamais `cours/`, `travail/`, `packs/` ni `.code-acces` : ils sont ignorés par git, et c'est voulu.
+
+Donne à Issa le nombre de QCM par fiche, ceux du tutorat laissés de côté et les passages illisibles.
+
+## Plusieurs fiches à la fois (une UE entière)
+
+1. Construis un plan `travail/<ue>/plan.json` : `id`, `nom`, `groupe` (partie de l'UE, lue dans le pied de
+   page des fiches) et `ordre` de chaque fiche.
+2. Extrais tous les textes.
+3. Répartis les fiches entre plusieurs sous-agents, avec des consignes communes. Exemple :
+   `travail/ue1/CONSIGNES.md`.

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Mélange l'ordre des items de chaque question, puis renumérote les lettres (A, B, C…).
+// Mélange l'ordre des items de chaque question générée, puis renumérote les lettres (A, B, C…).
 // Sert quand le vérificateur signale qu'une même lettre est trop souvent vraie.
 // Les explications ne doivent donc jamais citer une lettre.
 //
@@ -16,6 +16,8 @@ if (!fichier) {
 const pack = JSON.parse(readFileSync(fichier, 'utf8'))
 for (const c of pack.chapitres)
   for (const q of c.questions) {
+    // Les QCM repris d'un tutorat ou d'une annale gardent leurs lettres d'origine.
+    if (q.origine === 'annale') continue
     const items = q.items
     for (let i = items.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))

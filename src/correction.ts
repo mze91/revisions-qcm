@@ -42,6 +42,17 @@ export async function enregistrerReponse(
   })
 }
 
+// Questions des fiches choisies, mélangées ; celles jamais faites passent en premier si demandé.
+export async function preparerSerie(chapitreIds: string[], nouvellesDabord = true, taille = 0): Promise<string[]> {
+  const questions = await db.questions.where('chapitreId').anyOf(chapitreIds).primaryKeys()
+  let ordre = melanger(questions)
+  if (nouvellesDabord) {
+    const dejaFaites = new Set(await db.reponses.where('questionId').anyOf(questions).keys())
+    ordre = [...ordre.filter((id) => !dejaFaites.has(id)), ...ordre.filter((id) => dejaFaites.has(id))]
+  }
+  return taille ? ordre.slice(0, taille) : ordre
+}
+
 export function melanger<T>(liste: T[]): T[] {
   const copie = [...liste]
   for (let i = copie.length - 1; i > 0; i--) {

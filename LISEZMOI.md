@@ -3,35 +3,24 @@
 ## Installer l'appli sur l'iPhone de ta sœur
 1. Ouvre **https://mze91.github.io/revisions-qcm/** dans **Safari**.
 2. Touche le bouton Partager (le carré avec une flèche), puis **« Sur l'écran d'accueil »**.
-3. L'icône « QCM » apparaît. L'appli fonctionne ensuite même sans connexion.
+3. Ouvre l'appli depuis son icône et tape le **code d'accès**. Il est dans le fichier `.code-acces` de ce
+   dossier : demande-le à Claude si besoin. Elle ne le tape qu'une seule fois.
 
-Elle se met à jour toute seule quand tu publies une nouvelle version. Ses données ne sont pas touchées par
-ces mises à jour.
+Ensuite, elle n'a plus rien à faire. Ses cours se mettent à jour tout seuls à chaque ouverture de l'appli
+(avec Internet), et l'appli marche aussi hors ligne.
 
-## Ajouter un cours
-1. Dépose le cours de ta sœur dans `cours/<Matière>/`. Formats acceptés : PDF, Word, PowerPoint, photos de
-   pages, notes manuscrites.
-2. Ouvre une session Claude Code dans ce dossier et écris : **/generer-qcm** (ou « génère les QCM du cours
-   … »).
-3. Claude lit le cours, écrit les QCM, puis vérifie que chaque correction cite une phrase qui existe vraiment
-   dans le cours. Le fichier obtenu est dans `packs/<matière>/<chapitre>.qcm.json`.
-
-## L'envoyer à ta sœur
-1. Fais un clic droit sur le fichier, puis Partager → AirDrop vers son iPhone (ou envoie-le par WhatsApp ou
-   par mail).
-2. Sur son téléphone : « Enregistrer dans Fichiers ».
-3. Dans l'appli : **Mes cours → Importer un fichier**, puis choisir le fichier.
-
-Si tu régénères un chapitre, il suffit de réimporter le fichier. Ses erreurs et son historique sont gardés.
-
-## Essayer l'appli sur le Mac
-```bash
-npm run dev
-```
-Ensuite, ouvre http://localhost:5173. Le bouton « Essayer avec un cours d'exemple » charge 14 QCM sur le cycle
-cardiaque.
+## Ajouter des cours (c'est toi qui le fais)
+1. Dépose les fiches dans `cours/<UE>/` (PDF, Word, PowerPoint, photos…).
+2. Dans une session Claude Code ouverte sur ce dossier, demande : « génère les QCM de l'UE2 » (ou d'une
+   fiche précise). Claude suit la méthode `/generer-qcm` : il reprend les QCM d'entraînement du tutorat, en
+   écrit d'autres à partir du cours, et vérifie que chaque correction cite le cours mot pour mot.
+3. Demande ensuite à Claude de **publier** : il ajoute l'UE à `outils/contenu-publie.json`, lance
+   `node outils/publier-contenu.mjs` (qui chiffre les QCM) et envoie la mise à jour en ligne.
+   Quelques minutes plus tard, les nouveaux cours apparaissent sur le téléphone de ta sœur.
 
 ## Confidentialité
-Les dossiers `cours/`, `travail/` et `packs/` restent sur ce disque : ils ne sont jamais publiés. Sur le
-téléphone, tout reste dans l'appli, sans compte ni serveur. Pense à faire une sauvegarde de temps en temps
-(Mes cours → Créer une sauvegarde).
+- Les fiches du tutorat (`cours/`), le texte extrait (`travail/`), les QCM en clair (`packs/`) et le code
+  (`.code-acces`) restent sur ce disque : ils ne sont jamais envoyés sur GitHub.
+- En ligne, il n'y a que des QCM **chiffrés**, illisibles sans le code.
+- Pour changer le code (si quelqu'un d'autre l'a eu) : `node outils/publier-contenu.mjs --nouveau-code`,
+  puis publier. L'appli redemandera le nouveau code à ta sœur, sans rien perdre de sa progression.

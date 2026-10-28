@@ -45,6 +45,7 @@ historique et leur place dans « Mes erreurs ».
 | `format`, `version` | oui | toujours `"qcm-revision"` et `1` |
 | `matiere.id`, `chapitres[].id`, `questions[].id` | oui | minuscules, chiffres et tirets ; **ne jamais changer** l'id d'une question existante |
 | `chapitres[].ordre` | non | position du chapitre dans la matière |
+| `chapitres[].groupe` | non | partie de la matière (ex. « Pharmacologie » dans l'UE1) : l'appli regroupe les chapitres par partie |
 | `chapitres[].source` | non | nom du fichier de cours d'origine |
 | `questions[].type` | oui | `"multiple"` (une ou plusieurs bonnes réponses) ou `"unique"` (une seule) |
 | `questions[].origine` | non | `"genere"` (fait à partir du cours) ou `"annale"` (retranscrit d'une annale) |

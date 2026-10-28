@@ -5,3 +5,6 @@ dist
 /cours/
 /travail/
 /packs/
+
+# Code d'accès aux QCM : ne jamais publier
+.code-acces
