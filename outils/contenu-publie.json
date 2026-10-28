@@ -9,6 +9,16 @@
       "id": "ue2",
       "nom": "UE2",
       "cours": "cours/UE2"
+    },
+    {
+      "id": "ue3",
+      "nom": "UE3",
+      "cours": "cours/UE3"
+    },
+    {
+      "id": "ue4",
+      "nom": "UE4",
+      "cours": "cours/UE4"
     }
   ]
 }

@@ -17,10 +17,12 @@ Pas d'Internet, pas d'invention. Chaque item cite le cours mot pour mot (vérifi
   la fin, note sur 20 et détail par partie, historique des examens.
 - **Révision du jour** : répétition espacée, à partir de son historique (raté → 1 jour ; réussi 1 à 5 fois de
   suite → 2, 5, 12, 30, 60 jours).
+- **UE3 et UE4** (28/10/2026) : UE3 45 fiches, 672 QCM ; UE4 44 fiches, 706 QCM. Chaque QCM a été relu par un
+  second assistant qui ne l'avait pas écrit (consignes `travail/RELECTURE.md`) : items ambigus ou hors fiche
+  corrigés, QCM du tutorat dont la grille contredit la fiche écartés. Total : 186 fiches, 2 726 QCM.
 
 ## À venir
-1. **UE3** (45 fiches) puis **UE4** (44 fiches), même méthode (plan, sous-agents, vérification, publication).
-2. **Annales** (quand ta sœur les envoie) :
+1. **Annales** (quand ta sœur les envoie) :
    - les déposer dans `annales/<UE>/` (photos, scans ou PDF) ;
    - Claude les retranscrit fidèlement (`origine: "annale"`, `annee`), avec la grille officielle si elle
      existe ;
@@ -28,5 +30,5 @@ Pas d'Internet, pas d'invention. Chaque item cite le cours mot pour mot (vérifi
      un item que le cours ne permet pas de trancher est signalé, jamais inventé ;
    - dans l'examen blanc, ajouter le choix « Annales seules », et caler les réglages par défaut (durée,
      barème) sur les vraies modalités lues dans les annales.
-3. **QCM à schéma** : schéma légendé par des numéros, affiché au-dessus des items.
-4. Plus tard, si besoin : statistiques détaillées, synchronisation entre plusieurs appareils.
+2. **QCM à schéma** : schéma légendé par des numéros, affiché au-dessus des items.
+3. Plus tard, si besoin : statistiques détaillées, synchronisation entre plusieurs appareils.
