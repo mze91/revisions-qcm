@@ -7,7 +7,10 @@ import type { Pack } from './types'
 // puis l'appli télécharge et met à jour ses cours toute seule à chaque ouverture.
 
 const CLE_STOCKEE = 'contenu.cle'
-const EMPREINTES = 'contenu.empreintes'
+// Le numéro force un nouveau téléchargement quand l'appli apprend à garder de nouveaux champs : une ancienne
+// version (encore en cache sur un navigateur) a pu enregistrer une matière sans eux, avec la bonne empreinte.
+// v2 : pages des fiches (lecteur).
+const EMPREINTES = 'contenu.empreintes.v2'
 const BASE = `${import.meta.env.BASE_URL}contenu/`
 
 interface Index {
