@@ -113,7 +113,7 @@ for (const m of config.matieres) {
   const dossier = join('packs', m.id)
   const packs = readdirSync(dossier).filter((f) => f.endsWith('.qcm.json')).sort()
   const chapitres = []
-  for (const f of packs) {
+  const lus = packs.map((f) => {
     const chemin = join(dossier, f)
     try {
       execFileSync('node', ['outils/verifier-pack.mjs', chemin], { stdio: 'pipe' })
@@ -121,9 +121,18 @@ for (const m of config.matieres) {
       console.error(`✗ ${chemin} n'est pas valide : publication annulée.\n${e.stdout}`)
       process.exit(1)
     }
-    const pack = JSON.parse(readFileSync(chemin, 'utf8'))
+    return JSON.parse(readFileSync(chemin, 'utf8'))
+  })
+  // Un item d'annale peut citer une autre fiche (source.fiche) : il faut son PDF pour le surlignage.
+  const pdfs = new Map(lus.flatMap((p) => p.chapitres).map((c) => [c.id, m.cours && c.source ? join(m.cours, c.source) : null]))
+  const motsDe = new Map()
+  const mots = (pdf) => {
+    if (!motsDe.has(pdf)) motsDe.set(pdf, lireMots(pdf))
+    return motsDe.get(pdf)
+  }
+  for (const pack of lus) {
     for (const c of pack.chapitres) {
-      const pdf = m.cours && c.source ? join(m.cours, c.source) : null
+      const pdf = pdfs.get(c.id)
       if (pdf && existsSync(pdf)) {
         const images = imagesPages(pdf, join('travail', '_pages', m.id, c.id))
         const sortie = join(SORTIE, 'pages', m.id, `${c.id}.bin`)
@@ -132,11 +141,12 @@ for (const m of config.matieres) {
         c.pages = images.length
         // La version dans l'adresse fait retélécharger la fiche quand elle change (sinon, cache du téléphone).
         c.cours = `${relative(SORTIE, sortie)}?v=${createHash('sha256').update(bin).digest('hex').slice(0, 10)}`
-        const mots = lireMots(pdf)
         for (const q of c.questions)
           for (const it of q.items) {
             items++
-            const z = zonesExtrait(mots, it.source.extrait, it.source.page)
+            const autre = it.source.fiche ? pdfs.get(it.source.fiche) : pdf
+            if (!autre || !existsSync(autre)) continue
+            const z = zonesExtrait(mots(autre), it.source.extrait, it.source.page)
             if (z) {
               it.source.page = z.page
               it.source.zones = z.zones

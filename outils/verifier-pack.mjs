@@ -2,7 +2,8 @@
 // Vérifie un fichier de QCM avant de l'envoyer sur le téléphone.
 //  - structure conforme au format (docs/FORMAT-PACK.md) ;
 //  - chaque item a une explication et un extrait du cours ;
-//  - chaque extrait se trouve VRAIMENT dans le texte du cours (travail/<matiere>/<chapitre>/texte.md).
+//  - chaque extrait se trouve VRAIMENT dans le texte du cours (travail/<matiere>/<chapitre>/texte.md),
+//    ou dans celui de l'autre fiche indiquée par source.fiche (QCM d'annale à cheval sur plusieurs fiches).
 // C'est le garde-fou contre les QCM qui s'appuieraient sur autre chose que le cours.
 //
 // Usage : node outils/verifier-pack.mjs <pack.qcm.json> [--travail <dossier>] [--corriger-pages]
@@ -55,7 +56,14 @@ function trouver(extrait, texte) {
   return morceaux.length > 0
 }
 
+const textes = new Map()
 function chargerTexte(matiereId, chapitreId) {
+  const cle = `${matiereId}/${chapitreId}`
+  if (!textes.has(cle)) textes.set(cle, lireTexte(matiereId, chapitreId))
+  return textes.get(cle)
+}
+
+function lireTexte(matiereId, chapitreId) {
   const chemin = join(travail, matiereId, chapitreId, 'texte.md')
   if (!existsSync(chemin)) return null
   const brut = readFileSync(chemin, 'utf8')
@@ -127,15 +135,23 @@ for (const c of pack.chapitres ?? []) {
         return
       }
       if (ex.length > 400) avertissements.push(`${iou} : extrait long (${ex.length} caractères), raccourcis-le`)
-      if (!texte) return
-      if (!trouver(ex, texte.tout)) {
+      let cours = texte
+      if (it.source.fiche !== undefined) {
+        cours = ID.test(it.source.fiche) ? chargerTexte(pack.matiere.id, it.source.fiche) : null
+        if (!cours) {
+          erreurs.push(`${iou} : fiche « ${it.source.fiche} » introuvable`)
+          return
+        }
+      }
+      if (!cours) return
+      if (!trouver(ex, cours.tout)) {
         erreurs.push(`${iou} : extrait INTROUVABLE dans le cours → « ${ex.slice(0, 90)}${ex.length > 90 ? '…' : ''} »`)
         return
       }
-      if (texte.pages.size > 1) {
+      if (cours.pages.size > 1) {
         const page = it.source.page
-        if (page && texte.pages.has(page) && trouver(ex, texte.pages.get(page))) return
-        const bonne = [...texte.pages.entries()].find(([, t]) => trouver(ex, t))?.[0]
+        if (page && cours.pages.has(page) && trouver(ex, cours.pages.get(page))) return
+        const bonne = [...cours.pages.entries()].find(([, t]) => trouver(ex, t))?.[0]
         if (bonne && corrigerPages) {
           it.source.page = bonne
           pagesCorrigees++

@@ -97,7 +97,12 @@ export default function Erreurs({ onLancer }: { onLancer: (p: ParametresSession)
                   aria-label="Voir dans le cours"
                   onClick={() => {
                     const it = itemRate.get(q.id)
-                    ouvrirCours({ chapitreId: q.chapitreId, page: it?.source.page, zones: it?.source.zones, extrait: it?.source.extrait })
+                    ouvrirCours({
+                      chapitreId: it?.source.fiche ? `${q.matiereId}/${it.source.fiche}` : q.chapitreId,
+                      page: it?.source.page,
+                      zones: it?.source.zones,
+                      extrait: it?.source.extrait,
+                    })
                   }}
                 >
                   <Icone nom="livre" taille={18} />

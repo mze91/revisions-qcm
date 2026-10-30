@@ -1,10 +1,11 @@
 node_modules
 dist
 .DS_Store
-# Contenu des cours : reste sur ce disque, jamais publié
+# Contenu des cours et annales : reste sur ce disque, jamais publié
 /cours/
 /travail/
 /packs/
 
 # Code d'accès aux QCM : ne jamais publier
 .code-acces
+/annales/

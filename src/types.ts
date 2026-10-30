@@ -4,6 +4,7 @@
 export interface SourceCours {
   page?: number
   extrait: string
+  fiche?: string // id d'une autre fiche de la même matière, quand l'extrait vient d'elle (QCM d'annale)
   zones?: number[][] // rectangles [x, y, largeur, hauteur] en fractions de la page, pour surligner l'extrait
 }
 
@@ -21,7 +22,7 @@ export interface QuestionPack {
   enonce: string
   items: ItemPack[]
   origine?: 'genere' | 'annale' // « annale » = QCM repris tel quel (tutorat ou vraie annale d'examen)
-  annee?: string // pour une vraie annale d'examen : année ou session (ex. « 2024 » ou « Janvier 2024 »)
+  annee?: string // pour une vraie annale d'examen : épreuve et année (ex. « CCB1 2023-2024 »)
 }
 
 export interface ChapitrePack {

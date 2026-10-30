@@ -49,12 +49,13 @@ historique et leur place dans « Mes erreurs ».
 | `chapitres[].source` | non | nom du fichier de cours d'origine |
 | `questions[].type` | oui | `"multiple"` (une ou plusieurs bonnes réponses) ou `"unique"` (une seule) |
 | `questions[].origine` | non | `"genere"` (fait à partir du cours) ou `"annale"` (repris tel quel : QCM d'entraînement du tutorat ou vraie annale) |
-| `questions[].annee` | non | pour une vraie annale d'examen : année ou session, affichée « Annale 2024 » |
+| `questions[].annee` | non | pour une annale : épreuve et année (ex. « CB1 2023-2024 »), affichée « Annale CB1 2023-2024 » ; l'examen blanc propose « Annales » |
 | `items[].lettre` | oui | A, B, C… dans l'ordre |
 | `items[].correct` | oui | `true` ou `false` |
 | `items[].explication` | oui | commence par « Vrai. » ou « Faux. », puis explique avec les mots du cours |
 | `items[].source.extrait` | oui | copie **mot pour mot** du texte du cours (`travail/…/texte.md`). « […] » permet de sauter un passage |
 | `items[].source.page` | conseillé | page du cours où se trouve l'extrait |
+| `items[].source.fiche` | non | id d'une **autre fiche** de la même matière, quand l'extrait vient d'elle (QCM d'annale qui touche plusieurs fiches) |
 
 Le vérificateur `node outils/verifier-pack.mjs <fichier>` contrôle tout cela. Il vérifie aussi que chaque
 extrait se trouve vraiment dans le texte du cours.

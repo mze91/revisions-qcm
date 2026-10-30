@@ -7,7 +7,7 @@ import type { Bareme, Examen, Question } from './types'
 
 export interface Reglages {
   groupes: string[] | null // parties retenues (null = toute la matière)
-  source: 'tout' | 'tutorat'
+  source: 'tout' | 'tutorat' | 'annales' // tutorat = QCM d'entraînement des fiches ; annales = épreuves (annee)
   nombre: number
   minutes: number | null // null = automatique (1 min 30 par QCM)
   bareme: Bareme
@@ -58,7 +58,9 @@ export async function questionsDisponibles(matiereId: string, r: Reglages): Prom
   const chapitres = await db.chapitres.where('matiereId').equals(matiereId).toArray()
   const ids = chapitres.filter((c) => !r.groupes || r.groupes.includes(c.groupe ?? '')).map((c) => c.id)
   const qs = await db.questions.where('chapitreId').anyOf(ids).toArray()
-  return r.source === 'tutorat' ? qs.filter((q) => q.origine === 'annale') : qs
+  if (r.source === 'tutorat') return qs.filter((q) => q.origine === 'annale' && !q.annee)
+  if (r.source === 'annales') return qs.filter((q) => !!q.annee)
+  return qs
 }
 
 export async function demarrer(matiereId: string, r: Reglages): Promise<ExamenEnCours> {

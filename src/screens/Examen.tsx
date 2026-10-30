@@ -130,10 +130,13 @@ export function ExamenAccueil({
           </div>
           <div className="segments marge">
             <button className={reglages.source === 'tout' ? 'actif' : ''} onClick={() => changer({ source: 'tout' })}>
-              Tous les QCM
+              Tous
             </button>
             <button className={reglages.source === 'tutorat' ? 'actif' : ''} onClick={() => changer({ source: 'tutorat' })}>
-              Tutorat seul
+              Tutorat
+            </button>
+            <button className={reglages.source === 'annales' ? 'actif' : ''} onClick={() => changer({ source: 'annales' })}>
+              Annales
             </button>
           </div>
           <p className="aide">

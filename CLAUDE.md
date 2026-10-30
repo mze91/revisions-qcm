@@ -8,6 +8,10 @@ de ses cours**. Issa parle français et n'est pas développeur : réponds en fra
 - **Génération côté Issa, sans API** : `/generer-qcm` (skill du projet) → `packs/<matiere>/<fiche>.qcm.json`,
   vérifié par `outils/verifier-pack.mjs` (chaque extrait cité doit exister mot pour mot dans
   `travail/<matiere>/<fiche>/texte.md`). Les QCM d'entraînement du tutorat sont repris en `origine: "annale"`.
+- **Annales** (épreuves blanches de la sœur, `annales/<UE>/`) : une épreuve par fichier dans
+  `travail/annales/<ue>/` (consignes `CONSIGNES.md`, relecture `RELECTURE.md`, rapports `*.rapport.md`), champ
+  `annee` (« CB1 2023-2024 ») et `source.fiche` quand un passage vient d'une autre fiche ;
+  `node outils/ajouter-annales.mjs <ue>` les range dans les packs (relançable).
 - **Publication** : `node outils/publier-contenu.mjs` chiffre (AES-GCM, clé tirée du code `.code-acces` par
   PBKDF2) les matières listées dans `outils/contenu-publie.json` → `public/contenu/*.bin` + `index.json`,
   puis commit + push (GitHub Pages).

@@ -1,11 +1,17 @@
 import type { ReactNode } from 'react'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { db } from '../db'
 import { couleurMatiere } from '../stats'
 import { useOuvrirCours } from '../lecteur'
 import { Icone } from '../ui'
 import type { Chapitre, Question } from '../types'
 
 // Certains QCM du tutorat demandent de cocher les propositions fausses : « Vrai » serait alors trompeur.
-export const demandeFausses = (q: Question) => /fausse/i.test(q.enonce) && !/exacte/i.test(q.enonce)
+// Les annales disent aussi « inexacte(s) », « erronée(s) » ou « incorrecte(s) ».
+export const demandeFausses = (q: Question) => {
+  const enonce = q.enonce.replace(/inexacte|erron[ée]|incorrecte/gi, 'fausse')
+  return /fausse/i.test(enonce) && !/exacte/i.test(enonce)
+}
 
 interface Props {
   question: Question
@@ -21,6 +27,12 @@ interface Props {
 export default function QuestionVue({ question, chapitre, choix, corrige, onCocher, etiquette }: Props) {
   const ouvrirCours = useOuvrirCours()
   const fausses = demandeFausses(question)
+  // Nom des autres fiches citées par les items (QCM d'annale à cheval sur plusieurs fiches).
+  const autresFiches = useLiveQuery(async () => {
+    const ids = [...new Set(question.items.flatMap((it) => (it.source?.fiche ? [`${question.matiereId}/${it.source.fiche}`] : [])))]
+    const chapitres = await db.chapitres.bulkGet(ids)
+    return new Map(chapitres.flatMap((c) => (c ? [[c.id.split('/')[1], c.nom] as const] : [])))
+  }, [question.id])
 
   return (
     <>
@@ -65,11 +77,12 @@ export default function QuestionVue({ question, chapitre, choix, corrige, onCoch
                   <p className="ton-choix">
                     {it.lettre} · {coche ? 'Tu as coché' : "Tu n'as pas coché"} — {juste ? 'bien vu' : 'erreur'}
                   </p>
-                  <p>{it.explication}</p>
+                  {/* « Vrai. Cette proposition est fausse… » se lit mal : l'étiquette dit déjà « À cocher ». */}
+                  <p>{fausses ? it.explication.replace(/^(Vrai|Faux)\.\s*/, '') : it.explication}</p>
                   {it.source?.extrait && (
                     <blockquote>
                       <span className="source">
-                        <Icone nom="livre" taille={14} /> Cours{it.source.page ? `, p. ${it.source.page}` : ''}
+                        <Icone nom="livre" taille={14} /> {it.source.fiche ? `Fiche « ${autresFiches?.get(it.source.fiche) ?? '…'} »` : 'Cours'}{it.source.page ? `, p. ${it.source.page}` : ''}
                       </span>
                       « {it.source.extrait} »
                     </blockquote>
@@ -79,7 +92,7 @@ export default function QuestionVue({ question, chapitre, choix, corrige, onCoch
                       className="voir-cours"
                       onClick={() =>
                         ouvrirCours({
-                          chapitreId: chapitre.id,
+                          chapitreId: it.source?.fiche ? `${chapitre.matiereId}/${it.source.fiche}` : chapitre.id,
                           page: it.source?.page,
                           zones: it.source?.zones,
                           extrait: it.source?.extrait,

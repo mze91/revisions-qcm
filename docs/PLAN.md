@@ -20,15 +20,15 @@ Pas d'Internet, pas d'invention. Chaque item cite le cours mot pour mot (vérifi
 - **UE3 et UE4** (28/10/2026) : UE3 45 fiches, 672 QCM ; UE4 44 fiches, 706 QCM. Chaque QCM a été relu par un
   second assistant qui ne l'avait pas écrit (consignes `travail/RELECTURE.md`) : items ambigus ou hors fiche
   corrigés, QCM du tutorat dont la grille contredit la fiche écartés. Total : 186 fiches, 2 726 QCM.
+- **Annales** (30/10/2026, reçues dans `annales/<UE>/`, privé) : environ 80 épreuves blanches retranscrites
+  fidèlement (grille officielle, erratas appliqués ; consignes `travail/annales/CONSIGNES.md`), chacune relue
+  par un second assistant (`travail/annales/RELECTURE.md`). Un QCM n'est gardé que si chaque proposition est
+  tranchée mot pour mot par une fiche (pas par déduction) et si la réponse
+  officielle est d'accord avec la fiche. 1 055 QCM gardés (UE1 386, UE2 204, UE3 311, UE4 154), rangés dans la
+  fiche qui les justifie par `node outils/ajouter-annales.mjs <ue>` (`source.fiche` quand un passage vient
+  d'une autre fiche). Étiquette « Annale <épreuve> <année> », choix « Annales » dans l'examen blanc. Erreurs
+  probables des fiches et des corrections : `travail/annales/ERREURS-A-SIGNALER.md`. Total : 3 781 QCM.
 
 ## À venir
-1. **Annales** (quand ta sœur les envoie) :
-   - les déposer dans `annales/<UE>/` (photos, scans ou PDF) ;
-   - Claude les retranscrit fidèlement (`origine: "annale"`, `annee`), avec la grille officielle si elle
-     existe ;
-   - chaque question va dans la fiche de cours qui la justifie, et chaque item cite cette fiche mot pour mot ;
-     un item que le cours ne permet pas de trancher est signalé, jamais inventé ;
-   - dans l'examen blanc, ajouter le choix « Annales seules », et caler les réglages par défaut (durée,
-     barème) sur les vraies modalités lues dans les annales.
-2. **QCM à schéma** : schéma légendé par des numéros, affiché au-dessus des items.
-3. Plus tard, si besoin : statistiques détaillées, synchronisation entre plusieurs appareils.
+1. **QCM à schéma** : schéma légendé par des numéros, affiché au-dessus des items.
+2. Plus tard, si besoin : statistiques détaillées, synchronisation entre plusieurs appareils.
